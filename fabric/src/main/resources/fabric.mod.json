@@ -1,6 +1,6 @@
 {
     "schemaVersion": 1,
-    "id": "vacuumcleaner",
+    "id": "fish_anywhere",
     "version": "${version}",
     "name": "${mod_name}",
     "description": "${description}",
@@ -8,29 +8,19 @@
         "${mod_author}"
     ],
     "contact": {
-        "homepage": "https://fabricmc.net/",
-        "sources": "https://github.com/JuaanP/vacuum-cleaner"
+        "homepage": "https://github.com/JuaanP/",
+        "sources": "https://www.curseforge.com/minecraft/mc-mods/fish-anywhere"
     },
     "license": "${license}",
-    "icon": "assets/modid/${mod_id}.png",
+    "icon": "assets/fish_anywhere/icon.png",
     "environment": "*",
-    "entrypoints": {
-        "main": [
-            "com.juaanp.vacuumcleaner.VacuumCleaner"
-        ]
-    },
     "mixins": [
-        "${mod_id}.mixins.json",
-        "${mod_id}.fabric.mixins.json"
+        "fish_anywhere.mixins.json",
+        "fish_anywhere.fabric.mixins.json"
     ],
     "depends": {
-        "fabricloader": ">=0.14",
-        "fabric": "*",
-        "minecraft": "${minecraft_version}",
-        "java": ">=17"
-    },
-    "suggests": {
-        "another-mod": "*"
+        "fabricloader": ">=0.11",
+        "minecraft": "${minecraft_version}"
     }
 }
   

@@ -1,0 +1,147 @@
+{
+  "main": {
+    "id": "d272f7895579af59",
+    "type": "split",
+    "children": [
+      {
+        "id": "6c6ff58394e81001",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "01b2f4c05f1749f6",
+            "type": "leaf",
+            "state": {
+              "type": "graph",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "02b80b6c52a2e010",
+    "type": "split",
+    "children": [
+      {
+        "id": "72d03c989f8c62cd",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "3cd7f6790a6b4575",
+            "type": "leaf",
+            "state": {
+              "type": "diagram-edit",
+              "state": {
+                "file": "Untitled Diagram.svg"
+              }
+            }
+          },
+          {
+            "id": "036b31b0f23007c6",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "b14b413ade5c23bd",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "03034ad7c05fce90",
+    "type": "split",
+    "children": [
+      {
+        "id": "fac4cf64d1c908db",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "850c5626ed2772a4",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "c236be7a1176011c",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "eea3fedc2bbef879",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "745263dc96325f3d",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false
+    }
+  },
+  "active": "01b2f4c05f1749f6",
+  "lastOpenFiles": [
+    "Untitled Diagram.svg",
+    "create a link.md",
+    "Welcome.md"
+  ]
+}
