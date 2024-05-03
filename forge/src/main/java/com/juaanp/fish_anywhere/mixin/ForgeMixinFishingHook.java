@@ -2,19 +2,18 @@ package com.juaanp.fish_anywhere.mixin;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.projectile.FishingHook;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.material.Material;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.*;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(FishingHook.class)
 public class ForgeMixinFishingHook {
@@ -84,14 +83,14 @@ public class ForgeMixinFishingHook {
         return true;
     }
 
-    @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getMaterial()Lnet/minecraft/world/level/material/Material;", ordinal = 0), method = "catchingFish")
-    private Material forceWaterMaterial0(BlockState blockState) {
-        return Material.WATER;
+    @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;", ordinal = 0), method = "catchingFish")
+    private BlockState forceWaterBlockState0(ServerLevel serverLevel, BlockPos blockPos) {
+        return Blocks.WATER.defaultBlockState();
     }
 
-    @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/block/state/BlockState;getMaterial()Lnet/minecraft/world/level/material/Material;", ordinal = 1), method = "catchingFish")
-    private Material forceWaterMaterial1(BlockState blockState) {
-        return Material.WATER;
+    @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerLevel;getBlockState(Lnet/minecraft/core/BlockPos;)Lnet/minecraft/world/level/block/state/BlockState;", ordinal = 1), method = "catchingFish")
+    private BlockState forceWaterBlockState1(ServerLevel serverLevel, BlockPos blockPos) {
+        return Blocks.WATER.defaultBlockState();
     }
 
     @Redirect(at = @At(value = "INVOKE", target = "Lnet/minecraft/world/level/material/FluidState;getHeight(Lnet/minecraft/world/level/BlockGetter;Lnet/minecraft/core/BlockPos;)F"), method = "tick")
