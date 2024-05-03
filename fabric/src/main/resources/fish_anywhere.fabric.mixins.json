@@ -4,9 +4,8 @@
     "package": "com.juaanp.fish_anywhere.mixin",
     "refmap": "${mod_id}.refmap.json",
     "compatibilityLevel": "JAVA_17",
-    "server": [
-    ],
-    "injectors": {
+  "mixins": ["FabricMixinFishingHook"],
+  "injectors": {
       "defaultRequire": 1
     }
   }

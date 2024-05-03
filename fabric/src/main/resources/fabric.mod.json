@@ -12,7 +12,7 @@
         "sources": "https://www.curseforge.com/minecraft/mc-mods/fish-anywhere"
     },
     "license": "${license}",
-    "icon": "assets/fish_anywhere/icon.png",
+    "icon": "icon_original.png",
     "environment": "*",
     "mixins": [
         "fish_anywhere.mixins.json",
