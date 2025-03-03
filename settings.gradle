@@ -55,9 +55,23 @@ plugins {
     id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
 }
 
-// This should match the folder name of the project, or else IDEA may complain (see https://youtrack.jetbrains.com/issue/IDEA-317606)
+dependencyResolutionManagement {
+    versionCatalogs {
+        versions {
+            from(files("gradle/versions.toml"))
+        }
+    }
+}
+
+// This should match the folder name of the project, or else IDEA may complain
 rootProject.name = 'SeamlessTrading'
-include("common")
-include("fabric")
-include("forge")
-include("neoforge")
+
+// Incluir siempre los módulos básicos
+include 'common'
+
+// Incluir solo los loaders necesarios para esta versión
+include 'fabric'
+include 'forge'
+// // include 'neoforge' // Desactivado para 1.20.1 // Desactivado para 1.20.1
+
+

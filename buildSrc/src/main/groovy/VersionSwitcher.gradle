@@ -1,0 +1,30 @@
+class VersionSwitcher {
+    static void switchToVersion(project, version) {
+        def versions = project.extensions.getByName("versions")
+        def normalizedVersion = version.replace('.', '_')
+        
+        project.ext {
+            minecraft_version = versions."minecraft-${normalizedVersion}"
+            minecraft_version_range = versions."minecraft-range-${normalizedVersion}"
+            
+            // Java version depende de la serie principal (1.20.x o 1.21.x)
+            if (version.startsWith("1.20")) {
+                java_version = versions."java-1_20_x"
+            } else {
+                java_version = versions."java-1_21_x"
+            }
+            
+            fabric_version = versions."fabric-api-${normalizedVersion}"
+            fabric_loader_version = versions."fabric-loader"
+            
+            forge_version = versions."forge-${normalizedVersion}"
+            forge_loader_version_range = versions."forge-loader-range"
+            
+            neoforge_version = versions."neoforge-${normalizedVersion}"
+            neo_form_version = versions."neo-form-${normalizedVersion}"
+            neoforge_loader_version_range = versions."neoforge-loader-range"
+            
+            modmenu_version = versions."modmenu-${normalizedVersion}"
+        }
+    }
+} 

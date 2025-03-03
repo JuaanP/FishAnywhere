@@ -58,3 +58,45 @@ tasks.register('buildPublishAll') {
     dependsOn 'buildAll'
     dependsOn 'publishAll'
 }
+
+tasks.register('switchVersion') {
+    doLast {
+        def version = project.findProperty('mcVersion') ?: '1.20.4'
+        println "Switching to Minecraft ${version}"
+        VersionSwitcher.switchToVersion(project, version)
+        
+        // Actualizar gradle.properties
+        def props = new Properties()
+        file("gradle.properties").withInputStream { props.load(it) }
+        
+        // Propiedades básicas de Minecraft
+        props.setProperty('minecraft_version', minecraft_version)
+        props.setProperty('minecraft_version_range', minecraft_version_range)
+        props.setProperty('java_version', java_version)
+        
+        // Propiedades de Fabric
+        props.setProperty('fabric_version', fabric_version)
+        props.setProperty('fabric_loader_version', fabric_loader_version)
+        
+        // Propiedades de Forge
+        props.setProperty('forge_version', forge_version)
+        props.setProperty('forge_loader_version_range', forge_loader_version_range)
+        
+        // Propiedades de NeoForge
+        props.setProperty('neoforge_version', neoforge_version)
+        props.setProperty('neo_form_version', neo_form_version)
+        props.setProperty('neoforge_loader_version_range', neoforge_loader_version_range)
+        
+        // Otras propiedades
+        props.setProperty('modmenu_version', modmenu_version)
+        
+        file("gradle.properties").withOutputStream { props.store(it, null) }
+        
+        // Mostrar mensaje de confirmación
+        println "Switched to Minecraft ${version}:"
+        println "  - Java: ${java_version}"
+        println "  - Fabric: ${fabric_version} (loader ${fabric_loader_version})"
+        println "  - Forge: ${forge_version}"
+        println "  - NeoForge: ${neoforge_version}"
+    }
+}
