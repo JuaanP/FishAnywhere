@@ -1,6 +1,5 @@
 package com.juaanp.seamlesstrading.config;
 
-import com.juaanp.seamlesstrading.Constants;
 import com.juaanp.seamlesstrading.platform.Services;
 
 public class ConfigHelper {

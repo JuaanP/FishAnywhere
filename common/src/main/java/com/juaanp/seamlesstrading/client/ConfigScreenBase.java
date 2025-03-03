@@ -5,45 +5,70 @@ import com.juaanp.seamlesstrading.config.ConfigHelper;
 import net.minecraft.client.OptionInstance;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.*;
-import net.minecraft.client.gui.layouts.LinearLayout;
+import net.minecraft.client.gui.components.AbstractWidget;
+import net.minecraft.client.gui.components.Button;
+import net.minecraft.client.gui.components.OptionsList;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.options.OptionsSubScreen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
-import java.util.Map;
-
-import static net.minecraft.client.OptionInstance.createBoolean;
-
-public class ConfigScreenBase extends OptionsSubScreen {
+public class ConfigScreenBase extends Screen {
     private static final Component TITLE = Component.translatable("seamlesstrading.config.title");
     private static final Component RESET = Component.translatable("seamlesstrading.config.reset");
-    private static final Component FISHING_CATEGORY = Component.translatable("seamlesstrading.config.category.fishing");
-    private static final Component FLUIDS_CATEGORY = Component.translatable("seamlesstrading.config.category.fluids");
-    private static final Component FLUID_SELECTOR_BUTTON = Component.translatable("seamlesstrading.config.fluidSelector.button");
 
+    protected final Screen lastScreen;
     protected final Options options;
     protected Button resetButton;
-    protected final Button doneButton = Button.builder(CommonComponents.GUI_DONE, button -> onClose()).width(Button.SMALL_WIDTH).build();
+    protected Button doneButton;
+    protected OptionsList list;
 
     public ConfigScreenBase(Screen lastScreen, Options options) {
-        super(lastScreen, options, TITLE);
+        super(TITLE);
+        this.lastScreen = lastScreen;
         this.options = options;
     }
 
     @Override
-    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        setResetButtonState(isAnyNonDefault());
-        super.render(graphics, mouseX, mouseY, partialTick);
+    protected void init() {
+        this.list = new OptionsList(this.minecraft, this.width, this.height - 64, 32, 25);
+
+        this.resetButton = Button.builder(RESET, button -> resetToDefaults())
+                .pos(this.width / 2 - 155, this.height - 29)
+                .size(150, 20)
+                .build();
+
+        this.doneButton = Button.builder(CommonComponents.GUI_DONE, button -> onClose())
+                .pos(this.width / 2 + 5, this.height - 29)
+                .size(150, 20)
+                .build();
+
+        this.addRenderableWidget(this.resetButton);
+        this.addRenderableWidget(this.doneButton);
+
+        addOptions();
+
+        this.addRenderableWidget(list);
+
+        initializeTrackingFields();
     }
 
-    private void createResetButton() {
-        resetButton = Button.builder(RESET, button -> resetToDefaults())
-                .width(Button.SMALL_WIDTH)
-                .build();
+    @Override
+    public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+        super.render(graphics, mouseX, mouseY, partialTick);
+        this.list.render(graphics, mouseX, mouseY, partialTick);
+        graphics.drawCenteredString(this.font, this.title, this.width / 2, 5, 16777215);
+        setResetButtonState(isAnyNonDefault());
+    }
+
+    protected void addOptions() {
+        OptionInstance<Boolean> scrollNewOffers = OptionInstance.createBoolean(
+                "seamlesstrading.config.scrollNewOffers",
+                getScrollNewOffers(),
+                this::setScrollNewOffers
+        );
+
+        this.list.addBig(scrollNewOffers);
     }
 
     protected void setResetButtonState(boolean state) {
@@ -53,121 +78,21 @@ public class ConfigScreenBase extends OptionsSubScreen {
     }
 
     protected boolean isAnyNonDefault() {
-        return getForceOpenWater() != CommonConfig.getDefaultForceOpenWater() ||
-               getWaterEnabled() != CommonConfig.getDefaultWaterEnabled() ||
-               getLavaEnabled() != CommonConfig.getDefaultLavaEnabled() ||
-               getEmptyEnabled() != CommonConfig.getDefaultEmptyEnabled() ||
-               getOtherFluidsEnabled() != CommonConfig.getDefaultOtherFluidsEnabled();
+        return getScrollNewOffers() != CommonConfig.getDefaultScrollNewOffers();
     }
 
     private void resetToDefaults() {
-        setForceOpenWater(CommonConfig.getDefaultForceOpenWater());
-        setWaterEnabled(CommonConfig.getDefaultWaterEnabled());
-        setLavaEnabled(CommonConfig.getDefaultLavaEnabled());
-        setEmptyEnabled(CommonConfig.getDefaultEmptyEnabled());
-        setOtherFluidsEnabled(CommonConfig.getDefaultOtherFluidsEnabled());
-        
-        // Reset de los estados de fluidos individuales
-        Map<ResourceLocation, Boolean> fluidStates = CommonConfig.getInstance().getFluidStates();
-        fluidStates.clear();
-        
+        setScrollNewOffers(CommonConfig.getDefaultScrollNewOffers());
         saveConfig();
-        
-        // Recargar la pantalla
+
         this.minecraft.setScreen(this.lastScreen);
         this.minecraft.setScreen(new ConfigScreenBase(this.lastScreen, this.options));
     }
 
-    // Fields to track the initial values before user changes
-    private Boolean lastForceOpenWater = null;
-    private Boolean lastWaterEnabled = null;
-    private Boolean lastLavaEnabled = null;
-    private Boolean lastEmptyEnabled = null;
-    private Boolean lastOtherFluidsEnabled = null;
-
-    @Override
-    protected void addOptions() {
-        if (resetButton == null) {
-            createResetButton();
-        }
-
-        // Initialize all tracking fields at the beginning
-        initializeTrackingFields();
-
-        // Create option instances
-        OptionInstance<Boolean> forceOpenWaterToggle = createBoolean(
-                "seamlesstrading.config.forceOpenWater",
-                getForceOpenWater(),
-                this::setForceOpenWater
-        );
-
-        OptionInstance<Boolean> waterToggle = createBoolean(
-                "seamlesstrading.config.waterEnabled",
-                getWaterEnabled(),
-                this::setWaterEnabled
-        );
-
-        OptionInstance<Boolean> lavaToggle = createBoolean(
-                "seamlesstrading.config.lavaEnabled",
-                getLavaEnabled(),
-                this::setLavaEnabled
-        );
-
-        OptionInstance<Boolean> emptyToggle = createBoolean(
-                "seamlesstrading.config.emptyEnabled",
-                getEmptyEnabled(),
-                this::setEmptyEnabled
-        );
-
-        OptionInstance<Boolean> otherFluidsToggle = createBoolean(
-                "seamlesstrading.config.otherFluidsEnabled",
-                getOtherFluidsEnabled(),
-                this::setOtherFluidsEnabled
-        );
-
-        // Create header widgets for categories
-        StringWidget fishingHeader = new StringWidget(FISHING_CATEGORY, this.font);
-        StringWidget fluidsHeader = new StringWidget(FLUIDS_CATEGORY, this.font);
-        
-        // Botón para abrir la pantalla del selector de fluidos
-        Button fluidSelectorButton = Button.builder(FLUID_SELECTOR_BUTTON, (button) -> {
-            // Guardar la configuración actual antes de cambiar de pantalla
-            this.saveConfig();
-            // Crear la pantalla de fluidos usando OptionsSubScreen
-            FluidListScreen fluidScreen = new FluidListScreen(this, this.options);
-            this.minecraft.setScreen(fluidScreen);
-        }).build();
-
-        // Add spacing before first category
-        this.list.addSmall(new EmptyWidget(10, 8), new EmptyWidget(10, 8));
-
-        // Add fishing category header
-        this.list.addSmall(fishingHeader, null);
-        this.list.addBig(forceOpenWaterToggle);
-
-        // Add spacing between categories
-        this.list.addSmall(new EmptyWidget(10, 16), new EmptyWidget(10, 16));
-
-        // Add fluids category header
-        this.list.addSmall(fluidsHeader, null);
-        this.list.addBig(waterToggle);
-        this.list.addBig(lavaToggle);
-        this.list.addBig(emptyToggle);
-        this.list.addBig(otherFluidsToggle);
-        
-        // Add spacing before fluid selector button
-        this.list.addSmall(new EmptyWidget(10, 16), new EmptyWidget(10, 16));
-        
-        // Add fluid selector button
-        this.list.addSmall(fluidSelectorButton, null);
-    }
+    private Boolean lastScrollNewOffers = null;
 
     private void initializeTrackingFields() {
-        lastForceOpenWater = getForceOpenWater();
-        lastWaterEnabled = getWaterEnabled();
-        lastLavaEnabled = getLavaEnabled();
-        lastEmptyEnabled = getEmptyEnabled();
-        lastOtherFluidsEnabled = getOtherFluidsEnabled();
+        lastScrollNewOffers = getScrollNewOffers();
     }
 
     private static class EmptyWidget extends AbstractWidget {
@@ -182,56 +107,12 @@ public class ConfigScreenBase extends OptionsSubScreen {
         protected void updateWidgetNarration(NarrationElementOutput narrationElementOutput) {}
     }
 
-    @Override
-    protected void addFooter() {
-        LinearLayout linearLayout = layout.addToFooter(LinearLayout.horizontal().spacing(8));
-        
-        if (resetButton != null) {
-            linearLayout.addChild(resetButton);
-            linearLayout.addChild(doneButton);
-        } else {
-            super.addFooter();
-        }
+    protected boolean getScrollNewOffers() {
+        return CommonConfig.getInstance().isScrollNewOffers();
     }
 
-    protected boolean getForceOpenWater() {
-        return CommonConfig.getInstance().forceOpenWater();
-    }
-
-    protected void setForceOpenWater(boolean force) {
-        CommonConfig.getInstance().setForceOpenWater(force);
-    }
-
-    protected boolean getWaterEnabled() {
-        return CommonConfig.getInstance().isWaterEnabled();
-    }
-
-    protected void setWaterEnabled(boolean enabled) {
-        CommonConfig.getInstance().setWaterEnabled(enabled);
-    }
-
-    protected boolean getLavaEnabled() {
-        return CommonConfig.getInstance().isLavaEnabled();
-    }
-
-    protected void setLavaEnabled(boolean enabled) {
-        CommonConfig.getInstance().setLavaEnabled(enabled);
-    }
-
-    protected boolean getEmptyEnabled() {
-        return CommonConfig.getInstance().isEmptyEnabled();
-    }
-
-    protected void setEmptyEnabled(boolean enabled) {
-        CommonConfig.getInstance().setEmptyEnabled(enabled);
-    }
-
-    protected boolean getOtherFluidsEnabled() {
-        return CommonConfig.getInstance().isOtherFluidsEnabled();
-    }
-
-    protected void setOtherFluidsEnabled(boolean enabled) {
-        CommonConfig.getInstance().setOtherFluidsEnabled(enabled);
+    protected void setScrollNewOffers(boolean enabled) {
+        CommonConfig.getInstance().setScrollNewOffers(enabled);
     }
 
     protected void saveConfig() {
@@ -241,7 +122,7 @@ public class ConfigScreenBase extends OptionsSubScreen {
     @Override
     public void onClose() {
         saveConfig();
-        super.onClose();
+        this.minecraft.setScreen(this.lastScreen);
     }
 
     @Override

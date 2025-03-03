@@ -67,40 +67,17 @@ public class FabricPlatformHelper implements IPlatformHelper {
 
     private void applyConfig(ConfigData config) {
         CommonConfig common = CommonConfig.getInstance();
-        common.setForceOpenWater(config.forceOpenWater);
-        common.setWaterEnabled(config.waterEnabled);
-        common.setLavaEnabled(config.lavaEnabled);
-        common.setEmptyEnabled(config.emptyEnabled);
-        common.setOtherFluidsEnabled(config.otherFluidsEnabled);
-        Map<ResourceLocation, Boolean> fluidMap = new HashMap<>();
-        config.fluidStates.forEach((key, value) -> {
-            fluidMap.put(ResourceLocation.parse(key), value);
-        });
-        common.setFluidStates(fluidMap);
+        common.setScrollNewOffers(config.scrollNewOffers);
     }
 
     private ConfigData createConfigData() {
         ConfigData config = new ConfigData();
         CommonConfig common = CommonConfig.getInstance();
-        config.forceOpenWater = common.forceOpenWater();
-        config.waterEnabled = common.isWaterEnabled();
-        config.lavaEnabled = common.isLavaEnabled();
-        config.emptyEnabled = common.isEmptyEnabled();
-        config.otherFluidsEnabled = common.isOtherFluidsEnabled();
-        Map<String, Boolean> serializedFluidStates = new HashMap<>();
-        common.getFluidStates().forEach((key, value) -> {
-            serializedFluidStates.put(key.toString(), value);
-        });
-        config.fluidStates = serializedFluidStates;
+        config.scrollNewOffers = common.isScrollNewOffers();
         return config;
     }
 
     private static class ConfigData {
-        boolean forceOpenWater = CommonConfig.getDefaultForceOpenWater();
-        boolean waterEnabled = CommonConfig.getDefaultWaterEnabled();
-        boolean lavaEnabled = CommonConfig.getDefaultLavaEnabled();
-        boolean emptyEnabled = CommonConfig.getDefaultEmptyEnabled();
-        boolean otherFluidsEnabled = CommonConfig.getDefaultOtherFluidsEnabled();
-        Map<String, Boolean> fluidStates = new HashMap<>();
+        boolean scrollNewOffers = CommonConfig.getDefaultScrollNewOffers();
     }
 }

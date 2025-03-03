@@ -1,31 +1,31 @@
 package com.juaanp.seamlesstrading;
 
 import com.juaanp.seamlesstrading.client.ConfigScreenBase;
-import com.juaanp.seamlesstrading.platform.NeoForgePlatformHelper;
+import com.juaanp.seamlesstrading.platform.ForgePlatformHelper;
 import net.minecraft.client.Minecraft;
-import net.neoforged.neoforge.client.ConfigScreenHandler;
-import net.neoforged.neoforge.common.NeoForge;
 import org.slf4j.Logger;
 import com.mojang.logging.LogUtils;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.config.ModConfig;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
-import net.neoforged.fml.ModLoadingContext;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
+import net.minecraftforge.fml.config.ModConfig;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.client.ConfigScreenHandler;
 
 @Mod(Constants.MOD_ID)
-public class SeamlessTradingNeoForge {
+public class SeamlessTradingForge {
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public SeamlessTradingNeoForge(IEventBus modEventBus) {
-        modEventBus.register(ClientModEvents.class);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, NeoForgePlatformHelper.SPEC);
+    public SeamlessTradingForge() {
+        MinecraftForge.EVENT_BUS.register(this);
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ForgePlatformHelper.SPEC);
         CommonClass.init();
     }
 
-    @Mod.EventBusSubscriber(modid = Constants.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
+    @EventBusSubscriber(modid = Constants.MOD_ID, bus = EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
     public static class ClientModEvents {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
