@@ -1,0 +1,20 @@
+{
+  "seamlesstrading.config.section.no.villager.trading.common.toml.title": "SeamlessTrading-Konfiguration",
+  "seamlesstrading.config.title": "SeamlessTrading-Konfiguration",
+
+  "seamlesstrading.config.category.bottles": "Verzauberungsflasche-Einstellungen",
+  "seamlesstrading.config.category.orbs": "Erfahrungskugel-Einstellungen",
+
+  "seamlesstrading.config.requireCtrl": "Ducken erforderlich",
+  "seamlesstrading.config.xpMultiplier": "XP-Multiplikator",
+  "seamlesstrading.config.orbAttractRange": "Anziehungsreichweite",
+  "seamlesstrading.config.orbPickupRange": "Aufnahmereichweite",
+
+  "seamlesstrading.config.enable": "Aktivieren",
+  "seamlesstrading.config.reset": "Zurücksetzen",
+  "seamlesstrading.config.default": "Standard",
+
+  "seamlesstrading.config.levelsPerBottle": "Stufen pro Flasche",
+  "seamlesstrading.config.auto": "Auto",
+  "seamlesstrading.config.max": "Max"
+}

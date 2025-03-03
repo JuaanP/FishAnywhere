@@ -1,0 +1,20 @@
+{
+  "seamlesstrading.config.section.no.villager.trading.common.toml.title": "Настройки SeamlessTrading",
+  "seamlesstrading.config.title": "Настройки SeamlessTrading",
+
+  "seamlesstrading.config.category.bottles": "Настройки Пузырьков Зачарования",
+  "seamlesstrading.config.category.orbs": "Настройки Сфер Опыта",
+
+  "seamlesstrading.config.requireCtrl": "Требовать Приседание",
+  "seamlesstrading.config.xpMultiplier": "Множитель XP",
+  "seamlesstrading.config.orbAttractRange": "Дальность Притяжения",
+  "seamlesstrading.config.orbPickupRange": "Дальность Подбора",
+
+  "seamlesstrading.config.enable": "Включить",
+  "seamlesstrading.config.reset": "Сбросить",
+  "seamlesstrading.config.default": "По умолчанию",
+
+  "seamlesstrading.config.levelsPerBottle": "Уровней за флакон",
+  "seamlesstrading.config.auto": "Авто",
+  "seamlesstrading.config.max": "Макс"
+}

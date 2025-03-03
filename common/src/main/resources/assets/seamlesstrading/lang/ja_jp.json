@@ -1,0 +1,20 @@
+{
+  "seamlesstrading.config.section.no.villager.trading.common.toml.title": "SeamlessTrading設定",
+  "seamlesstrading.config.title": "SeamlessTrading設定",
+
+  "seamlesstrading.config.category.bottles": "エンチャントの瓶の設定",
+  "seamlesstrading.config.category.orbs": "経験値オーブの設定",
+
+  "seamlesstrading.config.requireCtrl": "しゃがみが必要",
+  "seamlesstrading.config.xpMultiplier": "XP倍率",
+  "seamlesstrading.config.orbAttractRange": "引き寄せ範囲",
+  "seamlesstrading.config.orbPickupRange": "拾得範囲",
+
+  "seamlesstrading.config.enable": "有効化",
+  "seamlesstrading.config.reset": "リセット",
+  "seamlesstrading.config.default": "デフォルト",
+
+  "seamlesstrading.config.levelsPerBottle": "ボトルごとのレベル",
+  "seamlesstrading.config.auto": "自動",
+  "seamlesstrading.config.max": "最大"
+}

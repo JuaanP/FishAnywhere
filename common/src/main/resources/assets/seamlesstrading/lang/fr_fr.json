@@ -1,0 +1,20 @@
+{
+  "seamlesstrading.config.section.no.villager.trading.common.toml.title": "Configuration de SeamlessTrading",
+  "seamlesstrading.config.title": "Configuration de SeamlessTrading",
+
+  "seamlesstrading.config.category.bottles": "Paramètres des Fioles d'Enchantement",
+  "seamlesstrading.config.category.orbs": "Paramètres des Orbes d'Expérience",
+
+  "seamlesstrading.config.requireCtrl": "S'accroupir nécessaire",
+  "seamlesstrading.config.xpMultiplier": "Multiplicateur d'XP",
+  "seamlesstrading.config.orbAttractRange": "Portée d'Attraction",
+  "seamlesstrading.config.orbPickupRange": "Portée de Ramassage",
+
+  "seamlesstrading.config.enable": "Activer",
+  "seamlesstrading.config.reset": "Réinitialiser",
+  "seamlesstrading.config.default": "Par défaut",
+
+  "seamlesstrading.config.levelsPerBottle": "Niveaux par fiole",
+  "seamlesstrading.config.auto": "Auto",
+  "seamlesstrading.config.max": "Max"
+}

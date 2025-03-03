@@ -1,0 +1,20 @@
+{
+  "seamlesstrading.config.section.no.villager.trading.common.toml.title": "Configurazione di SeamlessTrading",
+  "seamlesstrading.config.title": "Configurazione di SeamlessTrading",
+
+  "seamlesstrading.config.category.bottles": "Impostazioni Bottiglia di Incantamento",
+  "seamlesstrading.config.category.orbs": "Impostazioni Sfere di Esperienza",
+
+  "seamlesstrading.config.requireCtrl": "Richiedi Accovacciamento",
+  "seamlesstrading.config.xpMultiplier": "Moltiplicatore XP",
+  "seamlesstrading.config.orbAttractRange": "Raggio di Attrazione",
+  "seamlesstrading.config.orbPickupRange": "Raggio di Raccolta",
+
+  "seamlesstrading.config.enable": "Abilita",
+  "seamlesstrading.config.reset": "Ripristina",
+  "seamlesstrading.config.default": "Predefinito",
+
+  "seamlesstrading.config.levelsPerBottle": "Livelli per bottiglia",
+  "seamlesstrading.config.auto": "Auto",
+  "seamlesstrading.config.max": "Max"
+}

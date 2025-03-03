@@ -1,0 +1,45 @@
+{
+    "schemaVersion": 1,
+    "id": "${mod_id}",
+    "version": "${version}",
+    "name": "${mod_name}",
+    "description": "${description}",
+    "authors": [
+        "${mod_author}"
+    ],
+    "contact": {
+        "homepage": "https://www.curseforge.com/members/juaanp/projects",
+        "sources": "https://www.curseforge.com/members/juaanp/projects"
+    },
+    "license": "${license}",
+    "icon": "${mod_id}.png",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+          "com.juaanp.seamlesstrading.SeamlessTradingFabric"
+        ],
+        "modmenu": [
+            "com.juaanp.seamlesstrading.client.ModMenuIntegration"
+        ]
+    },
+    "mixins": [
+        "${mod_id}.mixins.json",
+        "${mod_id}.fabric.mixins.json"
+    ],
+    "depends": {
+        "fabricloader": "*",
+        "fabric-api": "*",
+        "minecraft": ">=1.21",
+        "java": ">=${java_version}"
+    },
+    "suggests": {
+        "another-mod": "*",
+        "modmenu": "*"
+    },
+    "resources": [
+        {
+            "type": "common_assets"
+        }
+    ]
+}
+  

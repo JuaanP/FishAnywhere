@@ -1,0 +1,20 @@
+{
+  "seamlesstrading.config.section.no.villager.trading.common.toml.title": "SeamlessTrading配置",
+  "seamlesstrading.config.title": "SeamlessTrading配置",
+
+  "seamlesstrading.config.category.bottles": "附魔之瓶设置",
+  "seamlesstrading.config.category.orbs": "经验球设置",
+
+  "seamlesstrading.config.requireCtrl": "需要下蹲",
+  "seamlesstrading.config.xpMultiplier": "经验倍数",
+  "seamlesstrading.config.orbAttractRange": "吸引范围",
+  "seamlesstrading.config.orbPickupRange": "拾取范围",
+
+  "seamlesstrading.config.enable": "启用",
+  "seamlesstrading.config.reset": "重置",
+  "seamlesstrading.config.default": "默认",
+
+  "seamlesstrading.config.levelsPerBottle": "每瓶等级",
+  "seamlesstrading.config.auto": "自动",
+  "seamlesstrading.config.max": "最大"
+}

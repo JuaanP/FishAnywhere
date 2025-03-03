@@ -1,0 +1,20 @@
+{
+  "seamlesstrading.config.section.no.villager.trading.common.toml.title": "Configuração do SeamlessTrading",
+  "seamlesstrading.config.title": "Configuração do SeamlessTrading",
+
+  "seamlesstrading.config.category.bottles": "Configurações de Frasco de Encantamento",
+  "seamlesstrading.config.category.orbs": "Configurações de Orbes de Experiência",
+
+  "seamlesstrading.config.requireCtrl": "Exigir Agachamento",
+  "seamlesstrading.config.xpMultiplier": "Multiplicador de XP",
+  "seamlesstrading.config.orbAttractRange": "Raio de Atração",
+  "seamlesstrading.config.orbPickupRange": "Raio de Coleta",
+
+  "seamlesstrading.config.enable": "Ativar",
+  "seamlesstrading.config.reset": "Redefinir",
+  "seamlesstrading.config.default": "Padrão",
+
+  "seamlesstrading.config.levelsPerBottle": "Níveis por frasco",
+  "seamlesstrading.config.auto": "Auto",
+  "seamlesstrading.config.max": "Máx"
+}

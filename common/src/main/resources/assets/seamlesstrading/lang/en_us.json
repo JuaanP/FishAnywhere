@@ -1,0 +1,20 @@
+{
+  "seamlesstrading.config.section.no.villager.trading.common.toml.title": "SeamlessTrading config",
+  "seamlesstrading.config.title": "SeamlessTrading config",
+
+  "seamlesstrading.config.category.bottles": "Bottle o' Enchanting Settings",
+  "seamlesstrading.config.category.orbs": "Experience Orb Settings",
+
+  "seamlesstrading.config.requireCtrl": "Require Crouching",
+  "seamlesstrading.config.xpMultiplier": "XP Multiplier",
+  "seamlesstrading.config.orbAttractRange": "Attraction Range",
+  "seamlesstrading.config.orbPickupRange": "Pickup Range",
+
+  "seamlesstrading.config.enable": "Enable",
+  "seamlesstrading.config.reset": "Reset",
+  "seamlesstrading.config.default": "Default",
+
+  "seamlesstrading.config.levelsPerBottle": "Levels per Bottle",
+  "seamlesstrading.config.auto": "Auto",
+  "seamlesstrading.config.max": "Max"
+}
