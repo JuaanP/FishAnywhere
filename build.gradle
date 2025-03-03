@@ -1,5 +1,18 @@
 plugins {
     id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.7"
+    id "com.modrinth.minotaur" version "2.+" apply false
+    id "com.matthewprenger.cursegradle" version "1.4.0" apply false
+}
+
+def localProperties = new Properties()
+def localPropertiesFile = rootProject.file('local.properties')
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withInputStream { localProperties.load(it) }
+}
+
+ext {
+    modrinth_token = localProperties.getProperty('modrinth_token') ?: System.getenv("MODRINTH_TOKEN") ?: ""
+    curseforge_token = localProperties.getProperty('curseforge_token') ?: System.getenv("CURSEFORGE_TOKEN") ?: ""
 }
 
 // Crear la carpeta builds y la subcarpeta de la versión si no existen
@@ -16,4 +29,30 @@ allprojects {
             task.dependsOn(':createBuildsFolder')
         }
     }
+}
+
+tasks.register('runAll') {
+    dependsOn ':fabric:runClient'
+    dependsOn ':forge:Client'
+    dependsOn ':neoforge:runClient'
+}
+
+tasks.register('buildAll') {
+    dependsOn ':fabric:build'
+    dependsOn ':forge:build'
+    dependsOn ':neoforge:build'
+}
+
+tasks.register('publishAll') {
+    dependsOn ':fabric:modrinth'
+    dependsOn ':fabric:curseforge'
+    dependsOn ':forge:modrinth'
+    dependsOn ':forge:curseforge'
+    dependsOn ':neoforge:modrinth'
+    dependsOn ':neoforge:curseforge'
+}
+
+tasks.register('buildPublishAll') {
+    dependsOn 'buildAll'
+    dependsOn 'publishAll'
 }

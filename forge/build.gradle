@@ -2,6 +2,8 @@ plugins {
     id 'multiloader-loader'
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
+    id 'com.modrinth.minotaur'
+    id 'com.matthewprenger.cursegradle'
 }
 
 base {
@@ -89,7 +91,7 @@ sourceSets.each {
 }
 
 tasks.register('copyJarToBuild') {
-    dependsOn 'reobfJar'
+    dependsOn 'jar'
     doLast {
         copy {
             from jar.archiveFile
@@ -99,3 +101,32 @@ tasks.register('copyJarToBuild') {
 }
 
 build.finalizedBy('copyJarToBuild')
+
+modrinth {
+    token = rootProject.ext.modrinth_token
+    projectId = "XXXXXX"
+    versionNumber = "${version}"
+    versionType = "release"
+    uploadFile = jar
+    gameVersions = ["${minecraft_version}"]
+    loaders = ["forge"]
+    changelog = "Changelog for version ${version}"
+}
+
+curseforge {
+    apiKey = rootProject.ext.curseforge_token
+    project {
+        id = "XXXXXX"
+        releaseType = "release"
+        changelogType = "markdown"
+        changelog = "Changelog for version ${version}"
+        addGameVersion minecraft_version
+        addGameVersion "Forge"
+        mainArtifact(jar) {
+            displayName = "SeamlessTrading-${version}-forge-${minecraft_version}"
+        }
+    }
+}
+
+tasks.modrinth.dependsOn(tasks.jar)
+tasks.curseforge.dependsOn(tasks.jar)

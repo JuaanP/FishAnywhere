@@ -1,6 +1,8 @@
 plugins {
     id 'multiloader-loader'
     id 'fabric-loom' version '1.6-SNAPSHOT'
+    id 'com.modrinth.minotaur'
+    id 'com.matthewprenger.cursegradle'
 }
 
 base {
@@ -55,3 +57,40 @@ tasks.register('copyJarToBuild') {
 }
 
 build.finalizedBy('copyJarToBuild')
+
+// Configuración de Modrinth
+modrinth {
+    token = rootProject.ext.modrinth_token
+    projectId = "XXXXXX" // ID de tu proyecto en Modrinth
+    versionNumber = "${version}"
+    versionType = "release" // release, beta, alpha
+    uploadFile = remapJar
+    gameVersions = ["${minecraft_version}"]
+    loaders = ["fabric"]
+    changelog = "Changelog for version ${version}"
+    dependencies {
+        required.project "fabric-api"
+    }
+}
+
+// Configuración de CurseForge
+curseforge {
+    apiKey = rootProject.ext.curseforge_token
+    project {
+        id = "XXXXXX" // ID de tu proyecto en CurseForge
+        releaseType = "release" // release, beta, alpha
+        changelogType = "markdown"
+        changelog = "Changelog for version ${version}"
+        addGameVersion minecraft_version
+        addGameVersion "Fabric"
+        mainArtifact(remapJar) {
+            displayName = "SeamlessTrading-${version}-fabric-${minecraft_version}"
+        }
+        relations {
+            requiredDependency 'fabric-api'
+        }
+    }
+}
+
+tasks.modrinth.dependsOn(tasks.remapJar)
+tasks.curseforge.dependsOn(tasks.remapJar)
