@@ -3,6 +3,10 @@ plugins {
     id 'fabric-loom' version '1.6-SNAPSHOT'
 }
 
+base {
+    archivesName = "${mod_id}-fabric-${minecraft_version}-v"
+}
+
 repositories {
     maven {url "https://maven.terraformersmc.com/releases"}
     maven {url "https://maven.nucleoid.xyz/"}
@@ -39,3 +43,15 @@ loom {
         }
     }
 }
+
+tasks.register('copyJarToBuild') {
+    dependsOn 'remapJar'
+    doLast {
+        copy {
+            from remapJar.archiveFile
+            into rootProject.file("builds/${minecraft_version}")
+        }
+    }
+}
+
+build.finalizedBy('copyJarToBuild')

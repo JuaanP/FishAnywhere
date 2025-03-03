@@ -1,3 +1,19 @@
 plugins {
     id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.7"
 }
+
+// Crear la carpeta builds y la subcarpeta de la versión si no existen
+tasks.register('createBuildsFolder') {
+    doLast {
+        rootProject.file("builds/${minecraft_version}").mkdirs()
+    }
+}
+
+// Hacer que todas las tareas build dependan de createBuildsFolder
+allprojects {
+    tasks.withType(Task).configureEach { task ->
+        if (task.name == 'build') {
+            task.dependsOn(':createBuildsFolder')
+        }
+    }
+}

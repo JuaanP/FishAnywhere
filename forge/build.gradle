@@ -3,9 +3,11 @@ plugins {
     id 'net.minecraftforge.gradle' version '[6.0,6.2)'
     id 'org.spongepowered.mixin' version '0.7-SNAPSHOT'
 }
+
 base {
-    archivesName = "${mod_name}-forge-${minecraft_version}"
+    archivesName = "${mod_id}-forge-${minecraft_version}-v"
 }
+
 mixin {
     add(sourceSets.main, "${mod_id}.refmap.json")
 
@@ -85,3 +87,15 @@ sourceSets.each {
     it.output.resourcesDir = dir
     it.java.destinationDirectory = dir
 }
+
+tasks.register('copyJarToBuild') {
+    dependsOn 'reobfJar'
+    doLast {
+        copy {
+            from jar.archiveFile
+            into rootProject.file("builds/${minecraft_version}")
+        }
+    }
+}
+
+build.finalizedBy('copyJarToBuild')
