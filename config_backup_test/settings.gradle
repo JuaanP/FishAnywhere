@@ -67,6 +67,4 @@ rootProject.name = 'SeamlessTrading'
 include 'common'
 include 'fabric'
 include 'forge'
-// // include 'neoforge' // Desactivado para 1.20.1 // Desactivado para 1.20.1
-
-
+include 'neoforge'
