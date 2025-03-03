@@ -61,7 +61,7 @@ build.finalizedBy('copyJarToBuild')
 // Configuración de Modrinth
 modrinth {
     token = rootProject.ext.modrinth_token
-    projectId = "XXXXXX" // ID de tu proyecto en Modrinth
+    projectId = rootProject.ext.modrinth_id
     versionNumber = "${version}"
     versionType = "release" // release, beta, alpha
     uploadFile = remapJar
@@ -77,7 +77,7 @@ modrinth {
 curseforge {
     apiKey = rootProject.ext.curseforge_token
     project {
-        id = "XXXXXX" // ID de tu proyecto en CurseForge
+        id = rootProject.ext.curseforge_id
         releaseType = "release" // release, beta, alpha
         changelogType = "markdown"
         changelog = "Changelog for version ${version}"

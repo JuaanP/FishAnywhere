@@ -13,6 +13,8 @@ if (localPropertiesFile.exists()) {
 ext {
     modrinth_token = localProperties.getProperty('modrinth_token') ?: System.getenv("MODRINTH_TOKEN") ?: ""
     curseforge_token = localProperties.getProperty('curseforge_token') ?: System.getenv("CURSEFORGE_TOKEN") ?: ""
+    modrinth_id = localProperties.getProperty('slug') ?: "seamless-trading"
+    curseforge_id = localProperties.getProperty('curseforge_id') ?: "1185535"
 }
 
 // Crear la carpeta builds y la subcarpeta de la versión si no existen

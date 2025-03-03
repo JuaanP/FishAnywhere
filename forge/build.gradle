@@ -104,7 +104,7 @@ build.finalizedBy('copyJarToBuild')
 
 modrinth {
     token = rootProject.ext.modrinth_token
-    projectId = "XXXXXX"
+    projectId = rootProject.ext.modrinth_id
     versionNumber = "${version}"
     versionType = "release"
     uploadFile = jar
@@ -116,7 +116,7 @@ modrinth {
 curseforge {
     apiKey = rootProject.ext.curseforge_token
     project {
-        id = "XXXXXX"
+        id = rootProject.ext.curseforge_id
         releaseType = "release"
         changelogType = "markdown"
         changelog = "Changelog for version ${version}"
