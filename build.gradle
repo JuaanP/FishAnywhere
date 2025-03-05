@@ -1,6 +1,17 @@
 plugins {
     // Required for NeoGradle
     id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.7"
+    id "com.modrinth.minotaur" version "2.+" apply false
+    id "com.matthewprenger.cursegradle" version "1.4.0" apply false
+}
+
+// Leer propiedades desde local.properties
+def localProperties = new Properties()
+def localPropertiesFile = file("${rootDir}/local.properties")
+if (localPropertiesFile.exists()) {
+    localPropertiesFile.withReader('UTF-8') { reader ->
+        localProperties.load(reader)
+    }
 }
 
 // Configuración mínima para los subproyectos
@@ -17,7 +28,107 @@ subprojects {
                 enabled = false
             }
         }
+        
+        // Añadir plugins de publicación para los loaders soportados
+        if (project.name in ['fabric', 'forge', 'neoforge']) {
+            plugins.apply('com.modrinth.minotaur')
+            plugins.apply('com.matthewprenger.cursegradle')
+            
+            // Configurar datos comunes para las publicaciones
+            ext {
+                releaseType = "release" // Opciones: release, beta, alpha
+                changelogFile = file("${rootDir}/CHANGELOG.md")
+                
+                // IDs de proyecto desde local.properties
+                modrinthId = localProperties.getProperty('modrinth_id', '')
+                curseforgeId = localProperties.getProperty('curseforge_id', '')
+                
+                // Relacionamiento entre versiones de Minecraft y loaders
+                gameVersions = [minecraft_version]
+                loaders = []
+                
+                // Configurar loaders específicos
+                if (project.name == 'fabric') {
+                    loaders.add("fabric")
+                } else if (project.name == 'forge') {
+                    loaders.add("forge")
+                } else if (project.name == 'neoforge') {
+                    loaders.add("neoforge")
+                }
+            }
+            
+            // Configurar Modrinth
+            modrinth {
+                token = localProperties.getProperty('modrinth_token', '')
+                projectId = modrinthId
+                versionNumber = "${project.version}"
+                versionName = "${project.version} (${project.name.capitalize()}) for MC ${minecraft_version}"
+                uploadFile = tasks.jar
+                gameVersions = project.gameVersions
+                loaders = project.loaders
+                changelog = changelogFile.exists() ? changelogFile.text : "No changelog provided"
+                releaseType = project.releaseType
+                
+                dependencies {
+                    // Dependencias requeridas
+                    if (project.name == 'fabric') {
+                        required.project "fabric-api"
+                    }
+                }
+            }
+            
+            // Configurar CurseForge
+            curseforge {
+                apiKey = localProperties.getProperty('curseforge_token', '')
+                project {
+                    id = curseforgeId
+                    releaseType = project.releaseType
+                    
+                    // Archivos a subir
+                    mainArtifact(tasks.jar) {
+                        displayName = "${project.version} (${project.name.capitalize()}) for MC ${minecraft_version}"
+                    }
+                    
+                    // Versiones de Minecraft compatibles
+                    gameVersions.each { version ->
+                        addGameVersion version
+                    }
+                    
+                    // Loaders de mod
+                    if (project.name == 'fabric') {
+                        addGameVersion "Fabric"
+                    } else if (project.name == 'forge') {
+                        addGameVersion "Forge" 
+                    } else if (project.name == 'neoforge') {
+                        addGameVersion "NeoForge"
+                    }
+                    
+                    changelog = changelogFile.exists() ? changelogFile.text : "No changelog provided"
+                    
+                    // Dependencias requeridas
+                    if (project.name == 'fabric') {
+                        relations {
+                            requiredDependency 'fabric-api'
+                        }
+                    }
+                }
+            }
+        }
     }
+}
+
+// Tarea para publicar todos los loaders a la vez
+task publishMod {
+    description 'Publica todos los loaders a Modrinth y CurseForge'
+    group 'publishing'
+    
+    // Depende de las tareas de publicación de todos los subproyectos
+    dependsOn subprojects.findAll { it.name in ['fabric', 'forge', 'neoforge'] }.collect { 
+        [
+            ":${it.name}:modrinth", 
+            ":${it.name}:curseforge"
+        ]
+    }.flatten()
 }
 
 // Tarea utilitaria para eliminar archivos JAR antiguos

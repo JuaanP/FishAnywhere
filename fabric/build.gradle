@@ -4,7 +4,7 @@ plugins {
 }
 
 base {
-    archivesName = "${mod_name}-fabric-${minecraft_version}-v"
+    archivesName = "${mod_name}-fabric-${minecraft_version}"
 }
 
 repositories {
@@ -52,3 +52,11 @@ loom {
         }
     }
 }
+
+// Configurar el JAR para que no tenga el sufijo -dev
+tasks.remapJar {
+    archiveClassifier = null
+}
+
+// Asegurar que el JAR principal sea el remapJar
+tasks.build.dependsOn tasks.remapJar
