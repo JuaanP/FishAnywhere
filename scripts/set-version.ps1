@@ -3,6 +3,25 @@ param(
     [string]$MinecraftVersion
 )
 
+# Ruta al directorio raíz del proyecto
+$projectRoot = Join-Path $PSScriptRoot ".."
+
+# Leer el archivo properties.toml
+$versionsToml = Get-Content (Join-Path $PSScriptRoot "properties.toml") -Raw
+
+# Convertir la versión de Minecraft al formato usado en properties.toml (1.20.4 -> 1_20_4)
+$versionKey = $MinecraftVersion.Replace(".", "_")
+
+# Obtener la versión de Java específica para esta versión de Minecraft
+$javaVersion = [regex]::Match($versionsToml, "java-$versionKey\s*=\s*`"([^`"]*)`"").Groups[1].Value
+
+if ([string]::IsNullOrEmpty($javaVersion)) {
+    Write-Host "Error: No se encontró la versión de Java para Minecraft $MinecraftVersion" -ForegroundColor Red
+    exit 1
+}
+
+Write-Host "Configurando proyecto para Minecraft $MinecraftVersion con Java $javaVersion..." -ForegroundColor Cyan
+
 # Script genérico para cambiar la configuración del proyecto a cualquier versión de Minecraft
 Write-Host "Configurando proyecto para Minecraft $MinecraftVersion" -ForegroundColor Cyan
 
@@ -37,13 +56,6 @@ if ($minecraftVersionCheck -eq "") {
 # Extraer valores usando expresiones regulares
 $minecraft = $MinecraftVersion
 $minecraftRange = [regex]::Match($versionsToml, "minecraft-range-$normalizedVersion\s*=\s*`"([^`"]*)`"").Groups[1].Value
-
-# Determinar versión de Java según la serie principal
-if ($minecraft -match "^1\.20\.") {
-    $javaVersion = [regex]::Match($versionsToml, "java-1_20_x\s*=\s*`"([^`"]*)`"").Groups[1].Value
-} else {
-    $javaVersion = [regex]::Match($versionsToml, "java-1_21_x\s*=\s*`"([^`"]*)`"").Groups[1].Value
-}
 
 # Extraer versiones específicas de cada loader
 $fabricApi = [regex]::Match($versionsToml, "fabric-api-$normalizedVersion\s*=\s*`"([^`"]*)`"").Groups[1].Value

@@ -1,0 +1,3 @@
+# Configuración para evitar conflictos entre Forge y NeoForge
+neoforge.lazy=true
+org.gradle.parallel=true

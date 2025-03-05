@@ -31,7 +31,7 @@ public class ConfigScreenBase extends Screen {
 
     @Override
     protected void init() {
-        this.list = new OptionsList(this.minecraft, this.width, this.height - 64, 32, this.height - 32, 25);
+        this.list = new OptionsList(this.minecraft, this.width, this.height - 64, 32, this.height - 32);
 
         this.resetButton = Button.builder(RESET, button -> resetToDefaults())
                 .pos(this.width / 2 - 155, this.height - 29)
