@@ -1,3 +1,15 @@
+[project]
+version = "1.2.0"
+group = "com.juaanp.seamlesstrading"
+
+[mod]
+name = "SeamlessTrading"
+author = "JuaanP"
+id = "seamlesstrading"
+license = "MIT"
+credits = ""
+description = "New trade offers appear instantly as soon as the villager xp progress bar fills. No more level up and trade refresh delay."
+
 [versions]
 # Minecraft versions
 minecraft-1_20_1 = "1.20.1"
