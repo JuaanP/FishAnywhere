@@ -55,18 +55,71 @@ plugins {
     id 'org.gradle.toolchains.foojay-resolver-convention' version '0.8.0'
 }
 
-dependencyResolutionManagement {
-    versionCatalogs {
-        versions {
-            from(files("gradle/versions.toml"))
-        }
+// This should match the folder name of the project, or else IDEA may complain (see https://youtrack.jetbrains.com/issue/IDEA-317606)
+rootProject.name = 'SeamlessTrading'
+include("common")
+include("fabric")
+include("forge")
+include("neoforge")
+
+// Establecer las propiedades del proyecto para todos los módulos
+gradle.beforeProject { project ->
+    // Leer el properties.toml para obtener información global
+    def propsFile = file("${rootDir}/scripts/properties.toml")
+    if (propsFile.exists()) {
+        def tomlContent = propsFile.text
+        
+        // Extraer la versión de Minecraft actual del environment o de un archivo de configuración
+        def versionRegex = /minecraft-[0-9_]+\s*=\s*"([^"]*)"/
+        def currentVersionMatch = System.getProperty("MINECRAFT_VERSION") ?: 
+                                  // Si no está definida como propiedad del sistema, usar la primera del archivo
+                                  (tomlContent =~ versionRegex)[0][1]
+                                  
+        // Establecer la versión actual como propiedad del gradle project
+        project.ext.current_minecraft_version = currentVersionMatch
     }
 }
 
-rootProject.name = 'SeamlessTrading'
-include 'common'
-include 'fabric'
-include 'forge'
-// // include 'neoforge' // Desactivado para 1.20.1 // Desactivado para 1.20.1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 

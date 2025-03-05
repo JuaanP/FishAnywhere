@@ -1,9 +1,0 @@
-// Aplicar a todos los proyectos
-allprojects {
-    // Configurar el Java toolchain
-    java {
-        toolchain {
-            languageVersion = JavaLanguageVersion.of(17)
-        }
-    }
-} 

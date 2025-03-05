@@ -1,12 +1,10 @@
 plugins {
     id 'multiloader-loader'
     id 'net.neoforged.gradle.userdev' version '7.0.107'
-    id 'com.modrinth.minotaur'
-    id 'com.matthewprenger.cursegradle'
 }
 
 base {
-    archivesName = "${mod_id}-neoforge-${minecraft_version}-v"
+    archivesName = "${mod_name}-neoforge-${minecraft_version}-v"
 }
 
 // Automatically enable neoforge AccessTransformers if the file exists
@@ -42,44 +40,3 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 dependencies {
     implementation "net.neoforged:neoforge:${neoforge_version}"
 }
-
-tasks.register('copyJarToBuild') {
-    dependsOn 'jar'
-    doLast {
-        copy {
-            from jar.archiveFile
-            into rootProject.file("builds/${minecraft_version}")
-        }
-    }
-}
-
-build.finalizedBy('copyJarToBuild')
-
-modrinth {
-    token = rootProject.ext.modrinth_token
-    projectId = rootProject.ext.modrinth_id
-    versionNumber = "${version}"
-    versionType = "release"
-    uploadFile = jar
-    gameVersions = ["${minecraft_version}"]
-    loaders = ["neoforge"]
-    changelog = "Changelog for version ${version}"
-}
-
-curseforge {
-    apiKey = rootProject.ext.curseforge_token
-    project {
-        id = rootProject.ext.curseforge_id
-        releaseType = "release"
-        changelogType = "markdown"
-        changelog = "Changelog for version ${version}"
-        addGameVersion minecraft_version
-        addGameVersion "NeoForge"
-        mainArtifact(jar) {
-            displayName = "SeamlessTrading-${version}-neoforge-${minecraft_version}"
-        }
-    }
-}
-
-tasks.modrinth.dependsOn(tasks.jar)
-tasks.curseforge.dependsOn(tasks.jar)

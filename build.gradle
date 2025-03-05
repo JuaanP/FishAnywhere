@@ -1,102 +1,28 @@
 plugins {
+    // Required for NeoGradle
     id "org.jetbrains.gradle.plugin.idea-ext" version "1.1.7"
-    id "com.modrinth.minotaur" version "2.+" apply false
-    id "com.matthewprenger.cursegradle" version "1.4.0" apply false
 }
 
-def localProperties = new Properties()
-def localPropertiesFile = rootProject.file('local.properties')
-if (localPropertiesFile.exists()) {
-    localPropertiesFile.withInputStream { localProperties.load(it) }
-}
-
-ext {
-    modrinth_token = localProperties.getProperty('modrinth_token') ?: System.getenv("MODRINTH_TOKEN") ?: ""
-    curseforge_token = localProperties.getProperty('curseforge_token') ?: System.getenv("CURSEFORGE_TOKEN") ?: ""
-    modrinth_id = localProperties.getProperty('slug') ?: "seamless-trading"
-    curseforge_id = localProperties.getProperty('curseforge_id') ?: "1185535"
-}
-
-// Crear la carpeta builds y la subcarpeta de la versión si no existen
-tasks.register('createBuildsFolder') {
-    doLast {
-        rootProject.file("builds/${minecraft_version}").mkdirs()
-    }
-}
-
-// Hacer que todas las tareas build dependan de createBuildsFolder
-allprojects {
-    tasks.withType(Task).configureEach { task ->
-        if (task.name == 'build') {
-            task.dependsOn(':createBuildsFolder')
+// Configuración mínima para los subproyectos
+subprojects {
+    afterEvaluate {
+        // Deshabilitar la generación de javadoc y sources jars
+        tasks.withType(Javadoc) {
+            enabled = false
+        }
+        
+        tasks.withType(Jar) {
+            // Deshabilitar los jar de sources y javadoc
+            if (name.contains('sources') || name.contains('javadoc')) {
+                enabled = false
+            }
         }
     }
 }
 
-tasks.register('runAll') {
-    dependsOn ':fabric:runClient'
-    dependsOn ':forge:Client'
-    dependsOn ':neoforge:runClient'
-}
-
-tasks.register('buildAll') {
-    dependsOn ':fabric:build'
-    dependsOn ':forge:build'
-    dependsOn ':neoforge:build'
-}
-
-tasks.register('publishAll') {
-    dependsOn ':fabric:modrinth'
-    dependsOn ':fabric:curseforge'
-    dependsOn ':forge:modrinth'
-    dependsOn ':forge:curseforge'
-    dependsOn ':neoforge:modrinth'
-    dependsOn ':neoforge:curseforge'
-}
-
-tasks.register('buildPublishAll') {
-    dependsOn 'buildAll'
-    dependsOn 'publishAll'
-}
-
-tasks.register('switchVersion') {
-    doLast {
-        def version = project.findProperty('mcVersion') ?: '1.20.4'
-        println "Switching to Minecraft ${version}"
-        VersionSwitcher.switchToVersion(project, version)
-        
-        // Actualizar gradle.properties
-        def props = new Properties()
-        file("gradle.properties").withInputStream { props.load(it) }
-        
-        // Propiedades básicas de Minecraft
-        props.setProperty('minecraft_version', minecraft_version)
-        props.setProperty('minecraft_version_range', minecraft_version_range)
-        props.setProperty('java_version', java_version)
-        
-        // Propiedades de Fabric
-        props.setProperty('fabric_version', fabric_version)
-        props.setProperty('fabric_loader_version', fabric_loader_version)
-        
-        // Propiedades de Forge
-        props.setProperty('forge_version', forge_version)
-        props.setProperty('forge_loader_version_range', forge_loader_version_range)
-        
-        // Propiedades de NeoForge
-        props.setProperty('neoforge_version', neoforge_version)
-        props.setProperty('neo_form_version', neo_form_version)
-        props.setProperty('neoforge_loader_version_range', neoforge_loader_version_range)
-        
-        // Otras propiedades
-        props.setProperty('modmenu_version', modmenu_version)
-        
-        file("gradle.properties").withOutputStream { props.store(it, null) }
-        
-        // Mostrar mensaje de confirmación
-        println "Switched to Minecraft ${version}:"
-        println "  - Java: ${java_version}"
-        println "  - Fabric: ${fabric_version} (loader ${fabric_loader_version})"
-        println "  - Forge: ${forge_version}"
-        println "  - NeoForge: ${neoforge_version}"
-    }
+// Tarea utilitaria para eliminar archivos JAR antiguos
+tasks.register('cleanBuilds', Delete) {
+    description 'Elimina la carpeta builds y su contenido'
+    group 'build'
+    delete "${rootDir}/builds"
 }

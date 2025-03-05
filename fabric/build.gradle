@@ -1,12 +1,10 @@
 plugins {
     id 'multiloader-loader'
     id 'fabric-loom' version '1.6-SNAPSHOT'
-    id 'com.modrinth.minotaur'
-    id 'com.matthewprenger.cursegradle'
 }
 
 base {
-    archivesName = "${mod_id}-fabric-${minecraft_version}-v"
+    archivesName = "${mod_name}-fabric-${minecraft_version}-v"
 }
 
 repositories {
@@ -20,6 +18,15 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
     modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+}
+
+// Deshabilitar explícitamente las tareas relacionadas con sources y javadoc
+tasks.configureEach { task ->
+    if (task.name.contains('sourcesJar') || 
+        task.name.contains('remapSourcesJar') || 
+        task.name.contains('javadoc')) {
+        task.enabled = false
+    }
 }
 
 loom {
@@ -45,52 +52,3 @@ loom {
         }
     }
 }
-
-tasks.register('copyJarToBuild') {
-    dependsOn 'remapJar'
-    doLast {
-        copy {
-            from remapJar.archiveFile
-            into rootProject.file("builds/${minecraft_version}")
-        }
-    }
-}
-
-build.finalizedBy('copyJarToBuild')
-
-// Configuración de Modrinth
-modrinth {
-    token = rootProject.ext.modrinth_token
-    projectId = rootProject.ext.modrinth_id
-    versionNumber = "${version}"
-    versionType = "release" // release, beta, alpha
-    uploadFile = remapJar
-    gameVersions = ["${minecraft_version}"]
-    loaders = ["fabric"]
-    changelog = "Changelog for version ${version}"
-    dependencies {
-        required.project "fabric-api"
-    }
-}
-
-// Configuración de CurseForge
-curseforge {
-    apiKey = rootProject.ext.curseforge_token
-    project {
-        id = rootProject.ext.curseforge_id
-        releaseType = "release" // release, beta, alpha
-        changelogType = "markdown"
-        changelog = "Changelog for version ${version}"
-        addGameVersion minecraft_version
-        addGameVersion "Fabric"
-        mainArtifact(remapJar) {
-            displayName = "SeamlessTrading-${version}-fabric-${minecraft_version}"
-        }
-        relations {
-            requiredDependency 'fabric-api'
-        }
-    }
-}
-
-tasks.modrinth.dependsOn(tasks.remapJar)
-tasks.curseforge.dependsOn(tasks.remapJar)
