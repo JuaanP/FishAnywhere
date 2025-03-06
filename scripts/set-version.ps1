@@ -130,6 +130,7 @@ modmenu_version=$modmenu
 # Gradle
 org.gradle.jvmargs=-Xmx3G
 org.gradle.daemon=false
+org.gradle.java.home=C:/Program Files/Java/jdk-$javaVersion
 "@
 
 $gradleProps | Set-Content "$PSScriptRoot\..\gradle.properties"

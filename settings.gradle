@@ -59,7 +59,6 @@ plugins {
 rootProject.name = 'SeamlessTrading'
 include("common")
 include("fabric")
-include("forge")
 include("neoforge")
 
 // Establecer las propiedades del proyecto para todos los módulos
@@ -79,6 +78,44 @@ gradle.beforeProject { project ->
         project.ext.current_minecraft_version = currentVersionMatch
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
