@@ -10,56 +10,52 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.OptionsList;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.OptionsSubScreen;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 
-public class ConfigScreenBase extends Screen {
+public class ConfigScreenBase extends OptionsSubScreen {
     private static final Component TITLE = Component.translatable("seamlesstrading.config.title");
     private static final Component RESET = Component.translatable("seamlesstrading.config.reset");
 
-    protected final Screen lastScreen;
-    protected final Options options;
-    protected Button resetButton;
-    protected Button doneButton;
     protected OptionsList list;
+    protected Button resetButton;
+
+    private Boolean lastScrollNewOffers = null;
 
     public ConfigScreenBase(Screen lastScreen, Options options) {
-        super(TITLE);
-        this.lastScreen = lastScreen;
-        this.options = options;
+        super(lastScreen, options, TITLE);
     }
 
     @Override
     protected void init() {
-        this.list = new OptionsList(this.minecraft, this.width, this.height - 64, 32, this.height - 32);
-
-        this.resetButton = Button.builder(RESET, button -> resetToDefaults())
-                .pos(this.width / 2 - 155, this.height - 29)
-                .size(150, 20)
-                .build();
-
-        this.doneButton = Button.builder(CommonComponents.GUI_DONE, button -> onClose())
-                .pos(this.width / 2 + 5, this.height - 29)
-                .size(150, 20)
-                .build();
-
-        this.addRenderableWidget(this.resetButton);
-        this.addRenderableWidget(this.doneButton);
-
+        this.list = new OptionsList(this.minecraft, this.width, this.height - 64, this);
+        
         addOptions();
-
-        this.addRenderableWidget(list);
-
+        
         initializeTrackingFields();
+        
+        this.addRenderableWidget(this.list);
+        
+        super.init();
+    }
+
+    @Override
+    protected void addFooter() {
+        this.resetButton = Button.builder(RESET, button -> resetToDefaults())
+                .width(100)
+                .build();
+        
+        this.layout.addToFooter(resetButton);
+        this.layout.addToFooter(Button.builder(CommonComponents.GUI_DONE, button -> this.onClose())
+                .width(100)
+                .build());
     }
 
     @Override
     public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
-        this.renderDirtBackground(graphics);
-        super.render(graphics, mouseX, mouseY, partialTick);
-        this.list.render(graphics, mouseX, mouseY, partialTick);
-        graphics.drawCenteredString(this.font, this.title, this.width / 2, 5, 16777215);
         setResetButtonState(isAnyNonDefault());
+        super.render(graphics, mouseX, mouseY, partialTick);
     }
 
     protected void addOptions() {
@@ -89,8 +85,6 @@ public class ConfigScreenBase extends Screen {
         this.minecraft.setScreen(this.lastScreen);
         this.minecraft.setScreen(new ConfigScreenBase(this.lastScreen, this.options));
     }
-
-    private Boolean lastScrollNewOffers = null;
 
     private void initializeTrackingFields() {
         lastScrollNewOffers = getScrollNewOffers();
@@ -123,7 +117,7 @@ public class ConfigScreenBase extends Screen {
     @Override
     public void onClose() {
         saveConfig();
-        this.minecraft.setScreen(this.lastScreen);
+        super.onClose();
     }
 
     @Override
