@@ -4,6 +4,6 @@ import com.juaanp.fishanywhere.platform.Services;
 
 public class CommonClass {
     public static void init() {
-        if (Services.PLATFORM.isModLoaded("fishanywhere")) {}
+        if (Services.PLATFORM.isModLoaded(Constants.MOD_ID)) {}
     }
 }

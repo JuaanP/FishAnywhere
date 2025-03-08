@@ -13,7 +13,7 @@ public class ForgePlatformHelper implements IPlatformHelper {
 
     static {
         SCROLL_NEW_OFFERS = BUILDER
-                .comment("fishanywhere.config.scrollNewOffers.tooltip")
+                .comment(Constants.MOD_ID + ".config.scrollNewOffers.tooltip")
                 .translation(Constants.MOD_ID + ".config.scrollNewOffers")
                 .define("scrollNewOffers", CommonConfig.getDefaultScrollNewOffers());
 

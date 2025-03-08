@@ -10,6 +10,6 @@ import net.minecraft.client.Minecraft;
 public class ModMenuIntegration implements ModMenuApi {
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
-        return parent -> new ConfigScreenBase(parent, Minecraft.getInstance().options);
+        return parent -> new ModConfigScreen(parent, Minecraft.getInstance().options);
     }
 }

@@ -29,7 +29,7 @@ public class FishAnywhereForge {
     public static class ClientModEvents {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
-            LOGGER.info("FishAnywhere client setup...");
+            LOGGER.info(Constants.MOD_NAME + " client setup...");
 
             ModLoadingContext.get().registerExtensionPoint(
                     ConfigScreenHandler.ConfigScreenFactory.class,

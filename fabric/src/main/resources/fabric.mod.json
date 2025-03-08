@@ -16,10 +16,10 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-          "com.juaanp.fishanywhere.FishAnywhereFabric"
+          "com.juaanp.${mod_id}.${mod_name}Fabric"
         ],
         "modmenu": [
-            "com.juaanp.fishanywhere.client.ModMenuIntegration"
+            "com.juaanp.${mod_id}.client.ModMenuIntegration"
         ]
     },
     "mixins": [
@@ -35,11 +35,6 @@
     "suggests": {
         "another-mod": "*",
         "modmenu": "*"
-    },
-    "resources": [
-        {
-            "type": "common_assets"
-        }
-    ]
+    }
 }
   
