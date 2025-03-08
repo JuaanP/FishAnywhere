@@ -1,0 +1,9 @@
+{
+  "fishanywhere.config.section.no.villager.trading.common.toml.title": "FishAnywhere config",
+  "fishanywhere.config.title": "FishAnywhere config",
+  "fishanywhere.config.scrollNewOffers": "Auto Scroll New Offers",
+
+  "fishanywhere.config.enable": "Enable",
+  "fishanywhere.config.reset": "Reset",
+  "fishanywhere.config.default": "Default"
+}

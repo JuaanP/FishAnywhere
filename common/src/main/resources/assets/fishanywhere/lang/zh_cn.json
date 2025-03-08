@@ -1,0 +1,20 @@
+{
+  "fishanywhere.config.section.no.villager.trading.common.toml.title": "FishAnywhere配置",
+  "fishanywhere.config.title": "FishAnywhere配置",
+
+  "fishanywhere.config.category.bottles": "附魔之瓶设置",
+  "fishanywhere.config.category.orbs": "经验球设置",
+
+  "fishanywhere.config.requireCtrl": "需要下蹲",
+  "fishanywhere.config.xpMultiplier": "经验倍数",
+  "fishanywhere.config.orbAttractRange": "吸引范围",
+  "fishanywhere.config.orbPickupRange": "拾取范围",
+
+  "fishanywhere.config.enable": "启用",
+  "fishanywhere.config.reset": "重置",
+  "fishanywhere.config.default": "默认",
+
+  "fishanywhere.config.levelsPerBottle": "每瓶等级",
+  "fishanywhere.config.auto": "自动",
+  "fishanywhere.config.max": "最大"
+}

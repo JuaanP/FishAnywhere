@@ -1,19 +1,21 @@
-package com.juaanp.seamlesstrading.platform;
+package com.juaanp.fishanywhere.platform;
 
-import com.juaanp.seamlesstrading.Constants;
-import com.juaanp.seamlesstrading.config.CommonConfig;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.loading.FMLLoader;
-import net.minecraftforge.common.ForgeConfigSpec;
+import com.juaanp.fishanywhere.Constants;
+import com.juaanp.fishanywhere.config.CommonConfig;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.neoforge.common.ModConfigSpec;
 
-public class ForgePlatformHelper implements IPlatformHelper {
-    private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
-    public static final ForgeConfigSpec.BooleanValue SCROLL_NEW_OFFERS;
-    public static final ForgeConfigSpec SPEC;
+public class NeoForgePlatformHelper implements IPlatformHelper {
+    private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
+    
+    public static final ModConfigSpec.BooleanValue SCROLL_NEW_OFFERS;
+    
+    public static final ModConfigSpec SPEC;
 
     static {
         SCROLL_NEW_OFFERS = BUILDER
-                .comment("seamlesstrading.config.scrollNewOffers.tooltip")
+                .comment("fishanywhere.config.scrollNewOffers.tooltip")
                 .translation(Constants.MOD_ID + ".config.scrollNewOffers")
                 .define("scrollNewOffers", CommonConfig.getDefaultScrollNewOffers());
 
@@ -22,7 +24,7 @@ public class ForgePlatformHelper implements IPlatformHelper {
 
     @Override
     public String getPlatformName() {
-        return "Forge";
+        return "NeoForge";
     }
 
     @Override
@@ -42,7 +44,7 @@ public class ForgePlatformHelper implements IPlatformHelper {
 
     @Override
     public void saveConfig() {
-        saveToForgeConfig();
+        saveToNeoForgeConfig();
     }
 
     private void applyToCommonConfig() {
@@ -50,7 +52,7 @@ public class ForgePlatformHelper implements IPlatformHelper {
         common.setScrollNewOffers(SCROLL_NEW_OFFERS.get());
     }
 
-    private void saveToForgeConfig() {
+    private void saveToNeoForgeConfig() {
         CommonConfig common = CommonConfig.getInstance();
         SCROLL_NEW_OFFERS.set(common.isScrollNewOffers());
     }

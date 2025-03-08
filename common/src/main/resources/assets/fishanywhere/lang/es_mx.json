@@ -1,0 +1,20 @@
+{
+  "fishanywhere.config.section.no.villager.trading.common.toml.title": "Configuración de FishAnywhere",
+  "fishanywhere.config.title": "Configuración de FishAnywhere",
+
+  "fishanywhere.config.category.bottles": "Configuración de Botella de Experiencia",
+  "fishanywhere.config.category.orbs": "Configuración de Orbes de Experiencia",
+
+  "fishanywhere.config.requireCtrl": "Requerir Agacharse",
+  "fishanywhere.config.xpMultiplier": "Multiplicador de XP",
+  "fishanywhere.config.orbAttractRange": "Rango de Atracción",
+  "fishanywhere.config.orbPickupRange": "Rango de Recogida",
+
+  "fishanywhere.config.enable": "Activar",
+  "fishanywhere.config.reset": "Restablecer",
+  "fishanywhere.config.default": "Predeterminado",
+
+  "fishanywhere.config.levelsPerBottle": "Niveles por botella",
+  "fishanywhere.config.auto": "Auto",
+  "fishanywhere.config.max": "Máx"
+}

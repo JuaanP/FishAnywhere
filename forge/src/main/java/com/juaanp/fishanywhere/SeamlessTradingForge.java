@@ -1,7 +1,7 @@
-package com.juaanp.seamlesstrading;
+package com.juaanp.fishanywhere;
 
-import com.juaanp.seamlesstrading.client.ConfigScreenBase;
-import com.juaanp.seamlesstrading.platform.ForgePlatformHelper;
+import com.juaanp.fishanywhere.client.ConfigScreenBase;
+import com.juaanp.fishanywhere.platform.ForgePlatformHelper;
 import net.minecraft.client.Minecraft;
 import org.slf4j.Logger;
 import com.mojang.logging.LogUtils;
@@ -16,10 +16,10 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.client.ConfigScreenHandler;
 
 @Mod(Constants.MOD_ID)
-public class SeamlessTradingForge {
+public class FishAnywhereForge {
     private static final Logger LOGGER = LogUtils.getLogger();
 
-    public SeamlessTradingForge() {
+    public FishAnywhereForge() {
         MinecraftForge.EVENT_BUS.register(this);
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ForgePlatformHelper.SPEC);
         CommonClass.init();
@@ -29,7 +29,7 @@ public class SeamlessTradingForge {
     public static class ClientModEvents {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
-            LOGGER.info("SeamlessTrading client setup...");
+            LOGGER.info("FishAnywhere client setup...");
 
             ModLoadingContext.get().registerExtensionPoint(
                     ConfigScreenHandler.ConfigScreenFactory.class,

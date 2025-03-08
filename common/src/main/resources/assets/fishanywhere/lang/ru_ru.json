@@ -1,0 +1,20 @@
+{
+  "fishanywhere.config.section.no.villager.trading.common.toml.title": "Настройки FishAnywhere",
+  "fishanywhere.config.title": "Настройки FishAnywhere",
+
+  "fishanywhere.config.category.bottles": "Настройки Пузырьков Зачарования",
+  "fishanywhere.config.category.orbs": "Настройки Сфер Опыта",
+
+  "fishanywhere.config.requireCtrl": "Требовать Приседание",
+  "fishanywhere.config.xpMultiplier": "Множитель XP",
+  "fishanywhere.config.orbAttractRange": "Дальность Притяжения",
+  "fishanywhere.config.orbPickupRange": "Дальность Подбора",
+
+  "fishanywhere.config.enable": "Включить",
+  "fishanywhere.config.reset": "Сбросить",
+  "fishanywhere.config.default": "По умолчанию",
+
+  "fishanywhere.config.levelsPerBottle": "Уровней за флакон",
+  "fishanywhere.config.auto": "Авто",
+  "fishanywhere.config.max": "Макс"
+}
