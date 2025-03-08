@@ -16,10 +16,10 @@
     "environment": "*",
     "entrypoints": {
         "main": [
-          "com.juaanp.seamlesstrading.SeamlessTradingFabric"
+          "com.juaanp.fishanywhere.FishAnywhereFabric"
         ],
         "modmenu": [
-            "com.juaanp.seamlesstrading.client.ModMenuIntegration"
+            "com.juaanp.fishanywhere.client.ModMenuIntegration"
         ]
     },
     "mixins": [
