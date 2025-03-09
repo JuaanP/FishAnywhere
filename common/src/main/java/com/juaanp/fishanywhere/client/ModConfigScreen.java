@@ -467,21 +467,54 @@
 
             @Override
             public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
-                // Guardar límites originales
+                // Calcular el límite inferior exacto
+                int bottomLimit = ModConfigScreen.this.height - BOTTOM_BUTTON_SECTION_HEIGHT;
+                
+                // Guardar los límites originales
                 int originalBottom = this.y1;
                 
-                // Ajustar el límite inferior para dejar espacio para los botones
-                this.y1 = Math.min(this.y1, ModConfigScreen.this.height - BOTTOM_BUTTON_SECTION_HEIGHT);
+                // Ajustar el límite inferior para el cálculo correcto de scroll
+                this.y1 = Math.min(this.y1, bottomLimit);
                 
-                // Renderizar la lista
+                // Configurar un scissor test para recortar cualquier renderizado fuera de los límites
+                // Esto evita que cualquier elemento se dibuje fuera del área de la lista
+                int scissorLeft = 0;
+                int scissorTop = this.y0;
+                int scissorRight = ModConfigScreen.this.width;
+                int scissorBottom = bottomLimit;
+                
+                // Ajustar coordenadas para escala del GUI
+                double scale = ModConfigScreen.this.minecraft.getWindow().getGuiScale();
+                int guiScaledWidth = ModConfigScreen.this.minecraft.getWindow().getGuiScaledWidth();
+                int guiScaledHeight = ModConfigScreen.this.minecraft.getWindow().getGuiScaledHeight();
+                
+                // Convertir coordenadas GUI a coordenadas de ventana
+                int windowScissorLeft = (int)(scissorLeft * scale);
+                int windowScissorBottom = (int)(guiScaledHeight * scale) - (int)(scissorBottom * scale);
+                int windowScissorRight = (int)(scissorRight * scale);
+                int windowScissorTop = (int)(guiScaledHeight * scale) - (int)(scissorTop * scale);
+                
+                // Habilitar scissor test
+                com.mojang.blaze3d.platform.GlStateManager._enableScissorTest();
+                com.mojang.blaze3d.platform.GlStateManager._scissorBox(
+                    windowScissorLeft,
+                    windowScissorBottom,
+                    windowScissorRight - windowScissorLeft,
+                    windowScissorTop - windowScissorBottom
+                );
+                
+                // Renderizar la lista con el recorte aplicado
                 super.render(poseStack, mouseX, mouseY, partialTick);
                 
-                // Restaurar el límite original después de renderizar
+                // Desactivar scissor test
+                com.mojang.blaze3d.platform.GlStateManager._disableScissorTest();
+                
+                // Restaurar el límite original
                 this.y1 = originalBottom;
                 
-                // Dibujar un separador en la parte inferior
-                fill(poseStack, 0, ModConfigScreen.this.height - BOTTOM_BUTTON_SECTION_HEIGHT - 1, 
-                     ModConfigScreen.this.width, ModConfigScreen.this.height - BOTTOM_BUTTON_SECTION_HEIGHT, 
+                // Dibujar un separador en la parte inferior (fuera del scissor test)
+                fill(poseStack, 0, bottomLimit - 1, 
+                     ModConfigScreen.this.width, bottomLimit, 
                      0x66FFFFFF);
             }
         }
