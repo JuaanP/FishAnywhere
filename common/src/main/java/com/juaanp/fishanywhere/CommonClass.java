@@ -32,12 +32,13 @@ public class CommonClass {
      * Esto permite asegurar que la configuración incluye todos los fluidos disponibles
      */
     public static void onFluidsAvailable() {
-        Constants.LOG.info("Fluids registry available, updating configuration...");
+        Constants.LOG.info("Fluids registry available, initializing registry helper...");
         
-        // Inicializar el registro de fluidos
+        // Solo inicializar el registro de fluidos para tenerlo disponible
+        // pero no cargar automáticamente en la configuración
         FluidRegistryHelper.initialize();
         
-        // Actualizar la configuración con todos los fluidos disponibles
-        CommonConfig.getInstance().loadAllFluids();
+        // No llamamos a CommonConfig.getInstance().loadAllFluids() aquí
+        // porque se hará solo cuando sea necesario (nueva configuración o reset)
     }
 }

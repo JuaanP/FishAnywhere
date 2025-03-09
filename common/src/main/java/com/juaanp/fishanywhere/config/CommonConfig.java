@@ -64,15 +64,22 @@ public class CommonConfig {
         // Inicializar FluidRegistryHelper si no se ha hecho
         FluidRegistryHelper.initialize();
         
-        // Obtener todos los IDs de fluidos válidos
-        Set<ResourceLocation> fluidIds = FluidRegistryHelper.getAllFluidIds();
+        // Si la configuración está sucia (modificada), no sobrescribir los fluidos permitidos
+        // Esto permite que configuraciones existentes mantengan su selección
+        if (!this.dirty) {
+            // Obtener todos los IDs de fluidos válidos
+            Set<ResourceLocation> fluidIds = FluidRegistryHelper.getAllFluidIds();
+            
+            // Añadir todos los fluidos a la lista de permitidos
+            this.allowedFluids.addAll(fluidIds);
+            
+            Constants.LOG.info("Loaded {} fluid(s) into allowed fluids list", fluidIds.size());
+            this.dirty = true;
+        } else {
+            Constants.LOG.debug("Configuration already modified, skipping automatic fluid loading");
+        }
         
-        // Añadir todos los fluidos a la lista de permitidos
-        this.allowedFluids.addAll(fluidIds);
-        
-        Constants.LOG.info("Loaded {} fluid(s) into allowed fluids list", fluidIds.size());
         defaultFluidsLoaded = true;
-        this.dirty = true;
     }
 
     /**

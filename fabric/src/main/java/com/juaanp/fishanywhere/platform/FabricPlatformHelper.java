@@ -42,39 +42,33 @@ public class FabricPlatformHelper implements IPlatformHelper {
 
     @Override
     public void loadConfig() {
-        if (!Files.exists(CONFIG_FILE)) {
-            Constants.LOG.info("Config file not found, creating default configuration");
-            saveConfig();
-            return;
-        }
-
-        try (Reader reader = Files.newBufferedReader(CONFIG_FILE)) {
-            ConfigData config = GSON.fromJson(reader, ConfigData.class);
-            
-            if (config != null) {
-                // Aplicar la configuración cargada
-                config.applyTo(CommonConfig.getInstance());
-                Constants.LOG.info("Configuration loaded from {}", CONFIG_FILE);
+        boolean configExists = Files.exists(CONFIG_FILE);
+        
+        try {
+            if (configExists) {
+                try (Reader reader = Files.newBufferedReader(CONFIG_FILE)) {
+                    ConfigData configData = GSON.fromJson(reader, ConfigData.class);
+                    
+                    if (configData != null) {
+                        configData.applyTo(CommonConfig.getInstance());
+                        Constants.LOG.info("Configuration loaded from JSON file");
+                        
+                        // Marcar la configuración como limpia ya que acabamos de cargarla
+                        CommonConfig.getInstance().markClean();
+                    }
+                }
             } else {
-                throw new IOException("Invalid configuration format");
+                Constants.LOG.info("Config file not found, creating default configuration");
+                
+                // Inicializar FluidRegistryHelper y cargar todos los fluidos, ya que es la primera vez
+                FluidRegistryHelper.initialize();
+                CommonConfig.getInstance().loadAllFluids();
+                
+                saveConfig();
             }
         } catch (Exception e) {
-            Constants.LOG.error("Error loading configuration, using defaults", e);
-            
-            // Si el archivo existe pero está corrupto, crear una copia de seguridad
-            if (Files.exists(CONFIG_FILE)) {
-                try {
-                    createConfigBackup("corrupted");
-                } catch (Exception ex) {
-                    Constants.LOG.error("Failed to backup corrupted configuration", ex);
-                }
-            }
-            
-            // Restaurar valores por defecto
-            CommonConfig.getInstance().resetToDefaults();
-            
-            // Crear nuevo archivo de configuración
-            saveConfig();
+            Constants.LOG.error("Error loading configuration", e);
+            createConfigBackup("error");
         }
     }
 
