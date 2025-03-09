@@ -77,11 +77,11 @@
                            FORCE_OPEN_WATER,
                            (button, value) -> setforceOpenWater(value));
 
-            // SECCIÓN 3: LISTA DE FLUIDOS
-            // Calcular altura disponible para la lista de fluidos
+            // SECCIÓN 3: LISTA DE FLUIDOS - Ajustada para respetar el footer
+            // Calcular altura disponible para la lista de fluidos, dejando espacio para los botones
             int fluidsListHeight = this.height - FLUIDS_SECTION_TOP - BOTTOM_BUTTON_SECTION_HEIGHT;
-
-            // Inicializar lista de fluidos con altura limitada
+            
+            // Inicializar lista de fluidos con altura limitada y límite inferior ajustado
             this.fluidsList = new FluidSelectionList(
                 this.minecraft,
                 fluidsListHeight
@@ -201,7 +201,8 @@
                       ModConfigScreen.this.width,
                       height,
                       FLUIDS_SECTION_TOP + 20,
-                      FLUIDS_SECTION_TOP + 20 + height,
+                      // Asegurar que la lista termina antes del inicio de la sección de botones
+                      ModConfigScreen.this.height - BOTTOM_BUTTON_SECTION_HEIGHT,
                       FLUIDS_LIST_ITEM_HEIGHT);
                 
                 this.setRenderBackground(false);
@@ -462,6 +463,26 @@
                         .map(word -> word.isEmpty() ? "" : word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase())
                         .collect(Collectors.joining(" "));
                 }
+            }
+
+            @Override
+            public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
+                // Guardar límites originales
+                int originalBottom = this.y1;
+                
+                // Ajustar el límite inferior para dejar espacio para los botones
+                this.y1 = Math.min(this.y1, ModConfigScreen.this.height - BOTTOM_BUTTON_SECTION_HEIGHT);
+                
+                // Renderizar la lista
+                super.render(poseStack, mouseX, mouseY, partialTick);
+                
+                // Restaurar el límite original después de renderizar
+                this.y1 = originalBottom;
+                
+                // Dibujar un separador en la parte inferior
+                fill(poseStack, 0, ModConfigScreen.this.height - BOTTOM_BUTTON_SECTION_HEIGHT - 1, 
+                     ModConfigScreen.this.width, ModConfigScreen.this.height - BOTTOM_BUTTON_SECTION_HEIGHT, 
+                     0x66FFFFFF);
             }
         }
     }
