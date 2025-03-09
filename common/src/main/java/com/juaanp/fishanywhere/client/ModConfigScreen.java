@@ -22,6 +22,8 @@
     import net.minecraft.world.item.ItemStack;
     import net.minecraft.world.level.material.Fluid;
     import net.minecraft.world.level.material.Fluids;
+    import net.minecraft.client.resources.sounds.SimpleSoundInstance;
+    import net.minecraft.sounds.SoundEvents;
 
     import java.util.ArrayList;
     import java.util.Comparator;
@@ -368,6 +370,11 @@
                 @Override
                 public boolean mouseClicked(double mouseX, double mouseY, int button) {
                     if (button == 0) {
+                        // Reproducir sonido de clic de botón
+                        minecraft.getSoundManager().play(
+                            SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F)
+                        );
+                        
                         this.toggleEnabled();
                         this.lastClickTime = Util.getMillis();
                         return true;
@@ -378,6 +385,11 @@
                 @Override
                 public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
                     if (keyCode == 257 || keyCode == 32 || keyCode == 335) { // Enter, Space, Numpad Enter
+                        // Reproducir sonido de clic de botón
+                        minecraft.getSoundManager().play(
+                            SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F)
+                        );
+                        
                         this.toggleEnabled();
                         return true;
                     } else {
