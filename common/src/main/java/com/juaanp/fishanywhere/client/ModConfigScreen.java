@@ -486,28 +486,30 @@
                  */
                 private Component formatFluidName(Fluid fluid) {
                     ResourceLocation id = Registry.FLUID.getKey(fluid);
-
+                    
                     // 1. Intentar obtener el nombre del bucket si existe
                     Item bucket = fluid.getBucket();
                     if (bucket != null && bucket != net.minecraft.world.item.Items.AIR) {
                         // Crear un ItemStack para obtener el nombre del bucket
                         ItemStack bucketStack = new ItemStack(bucket);
                         String bucketName = bucketStack.getHoverName().getString();
-
+                        
                         // Eliminar referencias a "bucket" o "bucket of"
                         String simplifiedName = bucketName.replaceAll("(?i)bucket\\s+of\\s+", "")
                                                          .replaceAll("(?i)\\s+bucket", "");
-
+                        
                         if (!simplifiedName.isEmpty() && !simplifiedName.equals(bucketName)) {
-                            return Component.literal(simplifiedName + " (" + id.getNamespace() + ")");
+                            // Ya no incluimos el namespace porque el encabezado del mod lo muestra
+                            return Component.literal(simplifiedName);
                         }
                     }
-
+                    
                     // 2. Formatear el ID del fluido directamente
                     String path = id.getPath();
                     String formattedName = formatPathName(path);
-
-                    return Component.literal(formattedName + " (" + id.getNamespace() + ")");
+                    
+                    // Ya no incluir el namespace
+                    return Component.literal(formattedName);
                 }
 
                 /**
