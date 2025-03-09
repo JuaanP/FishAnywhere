@@ -532,5 +532,39 @@
                      ModConfigScreen.this.width, bottomLimit, 
                      0x66FFFFFF);
             }
+
+            @Override
+            public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+                AbstractFluidEntry selected = this.getSelected();
+                
+                // Si tenemos un elemento seleccionado y es un FluidEntry, delegamos el evento de teclado
+                if (selected instanceof FluidEntry) {
+                    FluidEntry fluidEntry = (FluidEntry) selected;
+                    
+                    // Manejar Enter, Space y Numpad Enter
+                    if (keyCode == 257 || keyCode == 32 || keyCode == 335) {
+                        // Reproducir sonido
+                        minecraft.getSoundManager().play(
+                            SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F)
+                        );
+                        
+                        // Alternar el estado
+                        fluidEntry.toggleEnabled();
+                        return true;
+                    }
+                }
+                
+                // Para otras teclas, usar el comportamiento por defecto
+                return super.keyPressed(keyCode, scanCode, modifiers);
+            }
+
+            @Override
+            public boolean mouseClicked(double mouseX, double mouseY, int button) {
+                // Establecer esta lista como el elemento con foco
+                ModConfigScreen.this.setFocused(this);
+                
+                // Llamar al método original
+                return super.mouseClicked(mouseX, mouseY, button);
+            }
         }
     }
