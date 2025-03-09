@@ -442,10 +442,17 @@
                     if (fluidSprite != null) {
                         RenderSystem.setShaderTexture(0, BLOCK_ATLAS);
                         
-                        // Asegurar que no hay tintes de color aplicados
-                        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+                        // Aplicar color solo para fluidos específicos que lo necesitan
+                        if (fluid == Fluids.WATER) {
+                            // Color azul reconocible para el agua
+                            RenderSystem.setShaderColor(0.25F, 0.47F, 0.9F, 1.0F);
+                        } 
+                        else {
+                            // Para otros fluidos, no aplicar tinte
+                            RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+                        }
                         
-                        // Dibujar el sprite con su apariencia original
+                        // Dibujar el sprite
                         blit(poseStack, 
                              left + 5,                       // x
                              top + (height - iconSize) / 2,  // y
@@ -453,6 +460,9 @@
                              iconSize,                       // width
                              iconSize,                       // height
                              this.fluidSprite);
+                        
+                        // Restaurar color por defecto después de dibujar
+                        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
                     }
                     
                     // Renderizar el nombre del fluido a la derecha del icono
