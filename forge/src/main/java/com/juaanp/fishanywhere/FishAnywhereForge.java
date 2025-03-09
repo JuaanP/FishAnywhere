@@ -1,19 +1,9 @@
 package com.juaanp.fishanywhere;
 
-import com.juaanp.fishanywhere.client.ConfigScreenBase;
+import com.juaanp.fishanywhere.client.ModConfigScreen;
 import com.juaanp.fishanywhere.platform.ForgePlatformHelper;
-import net.minecraft.client.Minecraft;
-import org.slf4j.Logger;
-import com.mojang.logging.LogUtils;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.client.ConfigScreenHandler;
+
+import java.util.logging.Logger;
 
 @Mod(Constants.MOD_ID)
 public class FishAnywhereForge {
@@ -32,10 +22,8 @@ public class FishAnywhereForge {
             LOGGER.info(Constants.MOD_NAME + " client setup...");
 
             ModLoadingContext.get().registerExtensionPoint(
-                    ConfigScreenHandler.ConfigScreenFactory.class,
-                    () -> new ConfigScreenHandler.ConfigScreenFactory(
-                            (mc, screen) -> new ConfigScreenBase(screen, Minecraft.getInstance().options)
-                    )
+                    ExtensionPoint.CONFIGGUIFACTORY,
+                    () -> (minecraft, screen) -> new ModConfigScreen(screen, Minecraft.getInstance().options)
             );
         }
     }

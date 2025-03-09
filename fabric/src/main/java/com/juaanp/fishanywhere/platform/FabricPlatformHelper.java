@@ -67,17 +67,17 @@ public class FabricPlatformHelper implements IPlatformHelper {
 
     private void applyConfig(ConfigData config) {
         CommonConfig common = CommonConfig.getInstance();
-        common.setScrollNewOffers(config.scrollNewOffers);
+        common.setForceOpenWater(config.forceOpenWater);
     }
 
     private ConfigData createConfigData() {
         ConfigData config = new ConfigData();
         CommonConfig common = CommonConfig.getInstance();
-        config.scrollNewOffers = common.isScrollNewOffers();
+        config.forceOpenWater = common.forceOpenWater();
         return config;
     }
 
     private static class ConfigData {
-        boolean scrollNewOffers = CommonConfig.getDefaultScrollNewOffers();
+        boolean forceOpenWater = CommonConfig.getDefaultForceOpenWater();
     }
 }

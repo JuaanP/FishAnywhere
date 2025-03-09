@@ -8,14 +8,14 @@ import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ForgePlatformHelper implements IPlatformHelper {
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
-    public static final ForgeConfigSpec.BooleanValue SCROLL_NEW_OFFERS;
+    public static final ForgeConfigSpec.BooleanValue FORCE_OPEN_WATER;
     public static final ForgeConfigSpec SPEC;
 
     static {
-        SCROLL_NEW_OFFERS = BUILDER
-                .comment(Constants.MOD_ID + ".config.scrollNewOffers.tooltip")
-                .translation(Constants.MOD_ID + ".config.scrollNewOffers")
-                .define("scrollNewOffers", CommonConfig.getDefaultScrollNewOffers());
+        FORCE_OPEN_WATER = BUILDER
+                .comment(".config.forceOpenWater.tooltip")
+                .translation(Constants.MOD_ID + ".config.forceOpenWater")
+                .define("forceOpenWater", CommonConfig.getDefaultForceOpenWater());
 
         SPEC = BUILDER.build();
     }
@@ -47,11 +47,11 @@ public class ForgePlatformHelper implements IPlatformHelper {
 
     private void applyToCommonConfig() {
         CommonConfig common = CommonConfig.getInstance();
-        common.setScrollNewOffers(SCROLL_NEW_OFFERS.get());
+        common.forceOpenWater(FORCE_OPEN_WATER.get());
     }
 
     private void saveToForgeConfig() {
         CommonConfig common = CommonConfig.getInstance();
-        SCROLL_NEW_OFFERS.set(common.isScrollNewOffers());
+        FORCE_OPEN_WATER.set(common.forceOpenWater());
     }
 }
