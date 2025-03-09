@@ -42,9 +42,9 @@
         private static final Component FLUIDS_TITLE = Component.translatable(Constants.MOD_ID + ".config.fluidsTitle");
 
         // Constantes de posición y dimensiones - DISEÑO DE TRES SECCIONES
-        private static final int TITLE_SECTION_HEIGHT = 30;           // Sección superior para título
-        private static final int OPTIONS_SECTION_HEIGHT = 60;         // Reducido de 100 a 60
-        private static final int OPTIONS_SECTION_TOP = TITLE_SECTION_HEIGHT;
+        private static final int TITLE_SECTION_HEIGHT = 20;           // Reducido de 30 a 20
+        private static final int OPTIONS_SECTION_TOP = TITLE_SECTION_HEIGHT;  
+        private static final int OPTIONS_SECTION_HEIGHT = 40;         // Reducido de 60 a 40
         private static final int FLUIDS_SECTION_TOP = OPTIONS_SECTION_TOP + OPTIONS_SECTION_HEIGHT;
         private static final int BOTTOM_BUTTON_SECTION_HEIGHT = 40;   // Espacio para botones inferiores
         private static final int FLUIDS_LIST_ITEM_HEIGHT = 18;
@@ -67,9 +67,10 @@
         @Override
         protected void init() {
             // SECCIÓN 1: TÍTULO (ya se renderiza automáticamente)
-
-            // SECCIÓN 2: OPCIONES - Ajustada la posición vertical del botón para centrarlo
-            int optionsCenterY = OPTIONS_SECTION_TOP + (OPTIONS_SECTION_HEIGHT / 2) - 10; // Centro vertical (-10 para ajustar por altura del botón)
+            
+            // SECCIÓN 2: OPCIONES - Posición ajustada para estar más cerca del título
+            // Calcular la posición Y del botón para estar más cerca del título
+            int optionButtonY = OPTIONS_SECTION_TOP + 10; // Solo 10px desde el inicio de la sección de opciones
             
             // Botón forceOpenWater con tooltip
             this.forceOpenWaterButton = CycleButton.onOffBuilder(getforceOpenWater())
@@ -77,8 +78,8 @@
                         Component tooltip = Component.translatable(Constants.MOD_ID + ".config.forceOpenWater.tooltip");
                         return this.minecraft.font.split(tooltip, 200);
                     })
-                    .create(this.width / 2 - 150, optionsCenterY, 300, 20,
-                           FORCE_OPEN_WATER,
+                    .create(this.width / 2 - 150, optionButtonY, 300, 20, 
+                           FORCE_OPEN_WATER, 
                            (button, value) -> setforceOpenWater(value));
 
             // SECCIÓN 3: LISTA DE FLUIDOS - Ajustada para respetar el footer
@@ -112,9 +113,9 @@
         public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTick) {
             // Fondo
             this.renderDirtBackground(0);
-
+            
             // --- SECCIÓN 1: TÍTULO ---
-            drawCenteredString(poseStack, this.font, this.title, this.width / 2, 10, 0xFFFFFF);
+            drawCenteredString(poseStack, this.font, this.title, this.width / 2, 5, 0xFFFFFF); // Ajustado de 10 a 5
 
             // --- SECCIÓN 2: OPCIONES ---
             // Título de opciones
