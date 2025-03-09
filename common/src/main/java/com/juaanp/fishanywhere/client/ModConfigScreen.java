@@ -205,7 +205,11 @@
                 // Obtener todos los fluidos disponibles y crear entradas en la lista
                 List<Fluid> allFluids = new ArrayList<>();
                 Registry.FLUID.forEach(fluid -> {
-                    if (fluid != Fluids.EMPTY) {
+                    // Excluir el fluido vacío y los fluidos "flowing"
+                    if (fluid != Fluids.EMPTY && 
+                        fluid != Fluids.FLOWING_WATER && 
+                        fluid != Fluids.FLOWING_LAVA &&
+                        !Registry.FLUID.getKey(fluid).getPath().startsWith("flowing_")) {
                         allFluids.add(fluid);
                     }
                 });
