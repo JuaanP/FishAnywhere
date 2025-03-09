@@ -11,5 +11,5 @@ public class Constants {
 
 	public static final double FLOAT_COMPARISON_EPSILON = 0.05;
 
-	public static final boolean DEFAULT_FORCE_OPEN_WATER = false;
+	public static final boolean DEFAULT_FORCE_OPEN_WATER = true;
 }

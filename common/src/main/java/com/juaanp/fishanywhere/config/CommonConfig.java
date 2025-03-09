@@ -20,9 +20,9 @@ public class CommonConfig {
     private CommonConfig() {
         this.forceOpenWater = DEFAULT_FORCE_OPEN_WATER;
         
-        // Inicializar con fluidos predeterminados (agua por defecto)
         this.allowedFluids = new HashSet<>();
         this.allowedFluids.add(Registry.FLUID.getKey(Fluids.WATER));
+        this.allowedFluids.add(Registry.FLUID.getKey(Fluids.LAVA));
     }
 
     public static CommonConfig getInstance() {
