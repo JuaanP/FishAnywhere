@@ -560,10 +560,8 @@
 
             @Override
             public boolean mouseClicked(double mouseX, double mouseY, int button) {
-                // Establecer esta lista como el elemento con foco
                 ModConfigScreen.this.setFocused(this);
-                
-                // Llamar al método original
+
                 return super.mouseClicked(mouseX, mouseY, button);
             }
         }
