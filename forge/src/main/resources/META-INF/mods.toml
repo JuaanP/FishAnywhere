@@ -25,3 +25,5 @@ mandatory = true
 versionRange = "${minecraft_version}"
 ordering = "NONE"
 side = "BOTH"
+[[mixins]]
+config="fishanywhere.forge.mixins.json"

@@ -1,7 +1,7 @@
 {
-  "fishanywhere.config.section.no.villager.trading.common.toml.title": "FishAnywhere config",
   "fishanywhere.config.title": "FishAnywhere config",
-  "fishanywhere.config.scrollNewOffers": "Auto Scroll New Offers",
+  "fishanywhere.config.fluidsTitle": "Allowed Fluids",
+  "fishanywhere.config.forceOpenWater": "Force Open Water",
 
   "fishanywhere.config.enable": "Enable",
   "fishanywhere.config.reset": "Reset",

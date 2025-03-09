@@ -67,7 +67,7 @@ fabric-api-1_21_4 = "0.118.0+1.21.4"
 fabric-loader = "0.16.10"
 
 # Forge versions
-forge-1_19_2 = "43.5.0"
+forge-1_19_2 = "43.4.10"
 forge-1_20_1 = "47.3.33"
 forge-1_20_2 = "48.1.0"
 forge-1_20_3 = "49.0.2"

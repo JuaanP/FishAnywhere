@@ -15,7 +15,6 @@ public class CommonConfig {
 
     private boolean forceOpenWater;
     
-    // Set para almacenar los IDs de los fluidos permitidos
     private Set<ResourceLocation> allowedFluids;
 
     private CommonConfig() {

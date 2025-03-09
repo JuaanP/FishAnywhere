@@ -2,9 +2,9 @@ package com.juaanp.fishanywhere.platform;
 
 import com.juaanp.fishanywhere.Constants;
 import com.juaanp.fishanywhere.config.CommonConfig;
+import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
-import net.minecraftforge.common.ForgeConfigSpec;
 
 public class ForgePlatformHelper implements IPlatformHelper {
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
@@ -47,7 +47,7 @@ public class ForgePlatformHelper implements IPlatformHelper {
 
     private void applyToCommonConfig() {
         CommonConfig common = CommonConfig.getInstance();
-        common.forceOpenWater(FORCE_OPEN_WATER.get());
+        common.setForceOpenWater(FORCE_OPEN_WATER.get());
     }
 
     private void saveToForgeConfig() {
