@@ -6,6 +6,7 @@
     import com.mojang.blaze3d.systems.RenderSystem;
     import com.mojang.blaze3d.vertex.PoseStack;
     import net.minecraft.client.Minecraft;
+    import net.minecraft.client.gui.Font;
     import net.minecraft.client.gui.components.Button;
     import net.minecraft.client.gui.components.CycleButton;
     import net.minecraft.client.gui.components.ObjectSelectionList;
@@ -25,7 +26,9 @@
     import java.util.ArrayList;
     import java.util.Comparator;
     import java.util.List;
+    import java.util.Map;
     import java.util.Set;
+    import java.util.TreeMap;
     import java.util.stream.Collectors;
 
     public class ModConfigScreen extends Screen {
@@ -189,43 +192,62 @@
         }
 
         // Lista de selección de fluidos integrada
-        class FluidSelectionList extends ObjectSelectionList<FluidSelectionList.FluidEntry> {
+        class FluidSelectionList extends ObjectSelectionList<FluidSelectionList.AbstractFluidEntry> {
+            // Nueva clase base abstracta para entradas de la lista
+            abstract class AbstractFluidEntry extends ObjectSelectionList.Entry<AbstractFluidEntry> {}
+            
             public FluidSelectionList(Minecraft minecraft, int height) {
                 super(minecraft,
-                      ModConfigScreen.this.width,  // Ancho de la lista = ancho de pantalla
-                      height,                     // Altura calculada disponible
-                      FLUIDS_SECTION_TOP + 20,    // Top de la lista (después del título)
-                      FLUIDS_SECTION_TOP + 20 + height, // Bottom de la lista
-                      FLUIDS_LIST_ITEM_HEIGHT);   // Altura de cada ítem
-
-                // Configurar la lista para que sea más compacta
+                      ModConfigScreen.this.width,
+                      height,
+                      FLUIDS_SECTION_TOP + 20,
+                      FLUIDS_SECTION_TOP + 20 + height,
+                      FLUIDS_LIST_ITEM_HEIGHT);
+                
                 this.setRenderBackground(false);
                 this.setRenderTopAndBottom(false);
-
-                // Obtener todos los fluidos disponibles y crear entradas en la lista
-                List<Fluid> allFluids = new ArrayList<>();
+                
+                // Obtener todos los fluidos y organizarlos por mod
+                Map<String, List<Fluid>> fluidsByMod = new TreeMap<>();
+                
                 Registry.FLUID.forEach(fluid -> {
                     // Excluir el fluido vacío y los fluidos "flowing"
                     if (fluid != Fluids.EMPTY && 
                         fluid != Fluids.FLOWING_WATER && 
                         fluid != Fluids.FLOWING_LAVA &&
                         !Registry.FLUID.getKey(fluid).getPath().startsWith("flowing_")) {
-                        allFluids.add(fluid);
+                        
+                        // Obtener el namespace (mod ID)
+                        String modId = Registry.FLUID.getKey(fluid).getNamespace();
+                        
+                        // Agregar el fluido a la lista del mod correspondiente
+                        fluidsByMod.computeIfAbsent(modId, k -> new ArrayList<>()).add(fluid);
                     }
                 });
-
-                // Ordenar los fluidos por nombre
-                List<Fluid> sortedFluids = allFluids.stream()
-                    .sorted(Comparator.comparing(fluid ->
-                        Registry.FLUID.getKey(fluid).toString()))
-                    .collect(Collectors.toList());
-
-                // Agregar entradas a la lista
+                
+                // Conjunto de fluidos habilitados
                 Set<ResourceLocation> allowedFluids = CommonConfig.getInstance().getAllowedFluids();
-                for (Fluid fluid : sortedFluids) {
-                    ResourceLocation fluidId = Registry.FLUID.getKey(fluid);
-                    boolean isEnabled = allowedFluids.contains(fluidId);
-                    this.addEntry(new FluidEntry(fluid, fluidId, isEnabled));
+                
+                // Para cada mod, añadir un separador y luego sus fluidos
+                for (Map.Entry<String, List<Fluid>> entry : fluidsByMod.entrySet()) {
+                    String modId = entry.getKey();
+                    List<Fluid> modFluids = entry.getValue();
+                    
+                    // Añadir un encabezado para el mod
+                    this.addEntry(new ModHeaderEntry(modId));
+                    
+                    // Ordenar los fluidos de este mod por nombre
+                    List<Fluid> sortedModFluids = modFluids.stream()
+                        .sorted(Comparator.comparing(fluid -> 
+                            Registry.FLUID.getKey(fluid).getPath()))
+                        .collect(Collectors.toList());
+                    
+                    // Añadir cada fluido del mod
+                    for (Fluid fluid : sortedModFluids) {
+                        ResourceLocation fluidId = Registry.FLUID.getKey(fluid);
+                        boolean isEnabled = allowedFluids.contains(fluidId);
+                        this.addEntry(new FluidEntry(fluid, fluidId, isEnabled));
+                    }
                 }
             }
 
@@ -239,8 +261,66 @@
                 return width - 10; // Posición de la barra de desplazamiento
             }
 
-            // Clase para cada entrada de fluido en la lista
-            class FluidEntry extends ObjectSelectionList.Entry<FluidEntry> {
+            // Clase para encabezados de mod - ahora extiende AbstractFluidEntry
+            class ModHeaderEntry extends AbstractFluidEntry {
+                private final Component modName;
+                
+                public ModHeaderEntry(String modId) {
+                    this.modName = formatModName(modId);
+                }
+                
+                @Override
+                public Component getNarration() {
+                    return Component.translatable("narrator.select", this.modName);
+                }
+                
+                @Override
+                public boolean mouseClicked(double mouseX, double mouseY, int button) {
+                    return super.mouseClicked(mouseX, mouseY, button);
+                }
+                
+                @Override
+                public void render(PoseStack poseStack, int index, int top, int left, int width, int height, 
+                                 int mouseX, int mouseY, boolean isHovered, float partialTick) {
+                    // Dibujar un fondo para el encabezado del mod
+                    fill(poseStack, left, top, left + width, top + height, 0x44000000);
+                    
+                    // Dibujar el nombre del mod centrado y en negrita
+                    Font font = ModConfigScreen.this.font;
+                    int textWidth = font.width(this.modName);
+                    drawString(poseStack, font, this.modName, 
+                              left + width / 2 - textWidth / 2, top + 5, 0xFFFF55);
+                    
+                    // Dibujar líneas decorativas a los lados del nombre
+                    int lineY = top + height / 2;
+                    int linePadding = 10;
+                    int lineWidth = (width - textWidth) / 2 - linePadding * 2;
+                    
+                    if (lineWidth > 5) {
+                        fill(poseStack, left + linePadding, lineY, left + linePadding + lineWidth, lineY + 1, 0x44FFFFFF);
+                        fill(poseStack, left + width - linePadding - lineWidth, lineY, left + width - linePadding, lineY + 1, 0x44FFFFFF);
+                    }
+                }
+                
+                /**
+                 * Formatea el ID del mod para mostrarlo de forma legible
+                 */
+                private Component formatModName(String modId) {
+                    if ("minecraft".equals(modId)) {
+                        return Component.literal("Minecraft");
+                    }
+                    
+                    // Convertir el modId a Title Case
+                    String formattedName = java.util.Arrays.stream(modId.split("_"))
+                        .map(word -> word.isEmpty() ? "" : word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase())
+                        .collect(Collectors.joining(" "));
+                    
+                    return Component.literal(formattedName);
+                }
+            }
+
+            // Modificar FluidEntry para extender de AbstractFluidEntry
+            class FluidEntry extends AbstractFluidEntry {
                 private final Fluid fluid;
                 private final ResourceLocation fluidId;
                 private boolean enabled;
