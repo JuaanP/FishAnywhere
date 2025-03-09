@@ -3,6 +3,8 @@ package com.juaanp.fishanywhere;
 import com.juaanp.fishanywhere.config.ConfigHelper;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import com.juaanp.fishanywhere.util.FluidRegistryHelper;
+import com.juaanp.fishanywhere.config.CommonConfig;
 
 public class FishAnywhereFabric implements ModInitializer {
     @Override
@@ -10,11 +12,14 @@ public class FishAnywhereFabric implements ModInitializer {
         // Inicialización común
         CommonClass.init();
         
-        // Llamar a onFluidsAvailable cuando los registros estén completos
-        CommonClass.onFluidsAvailable();
+        // Inicializar el registro de fluidos para diagnóstico temprano
+        FluidRegistryHelper.initialize();
         
         // Registrar eventos del ciclo de vida del servidor
         registerLifecycleEvents();
+        
+        // Programar una tarea para actualizar la configuración después de que todos los mods estén cargados
+        scheduleConfigUpdate();
     }
     
     private void registerLifecycleEvents() {
@@ -28,6 +33,26 @@ public class FishAnywhereFabric implements ModInitializer {
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             Constants.LOG.debug("Server started, ensuring configuration is up to date...");
             ConfigHelper.reload();
+        });
+    }
+    
+    private void scheduleConfigUpdate() {
+        // En Fabric, podemos usar ServerLifecycleEvents.SERVER_STARTING para asegurarnos de que
+        // todos los registros estén completos
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
+            Constants.LOG.info("Verifying fluid registry completeness...");
+            
+            // Forzar la reinicialización del registro de fluidos
+            FluidRegistryHelper.forceInitialize();
+            
+            // Verificar si necesitamos actualizar la configuración
+            if (CommonConfig.getInstance().getAllowedFluids().size() <= 2) {
+                Constants.LOG.info("Updating configuration with complete fluid registry...");
+                CommonConfig.getInstance().forceLoadAllFluids();
+                
+                // Guardar la configuración actualizada
+                ConfigHelper.save();
+            }
         });
     }
 }

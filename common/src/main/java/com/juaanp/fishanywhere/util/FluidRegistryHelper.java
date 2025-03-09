@@ -18,47 +18,79 @@ public class FluidRegistryHelper {
     private static boolean initialized = false;
     
     /**
+     * Inicializa el registro de fluidos de forma forzada, ignorando el estado previo
+     */
+    public static void forceInitialize() {
+        initialized = false;
+        initialize();
+    }
+    
+    /**
      * Inicializa el registro de fluidos
      */
     public static void initialize() {
-        if (initialized) {
+        if (initialized && !VALID_FLUIDS.isEmpty()) {
             return;
         }
         
+        // Limpiar los mapas
         VALID_FLUIDS.clear();
         FLUIDS_BY_MOD.clear();
         
-        // Recorrer todos los fluidos en el registro
-        Registry.FLUID.forEach(fluid -> {
-            // Excluir el fluido vacío y los fluidos "flowing"
-            if (fluid != Fluids.EMPTY &&
-                fluid != Fluids.FLOWING_WATER &&
-                fluid != Fluids.FLOWING_LAVA &&
-                !Registry.FLUID.getKey(fluid).getPath().startsWith("flowing_")) {
-
-                // Obtener el namespace (mod ID)
-                ResourceLocation fluidId = Registry.FLUID.getKey(fluid);
-                String modId = fluidId.getNamespace();
-
-                // Casos especiales: agrupar fluidos específicos bajo "minecraft"
-                if ("milk".equals(modId) || "milk".equals(fluidId.getPath())) {
-                    modId = "minecraft";
-                }
-
-                // Agregar el fluido al mapa central
-                VALID_FLUIDS.put(fluidId, fluid);
-
-                // Agregar el fluido a la lista del mod correspondiente
-                FLUIDS_BY_MOD.computeIfAbsent(modId, k -> new ArrayList<>()).add(fluid);
+        try {
+            int count = 0;
+            // Imprimir todos los fluidos disponibles para diagnóstico
+            Constants.LOG.debug("===== Scanning available fluids =====");
+            for (Fluid fluid : Registry.FLUID) {
+                ResourceLocation id = Registry.FLUID.getKey(fluid);
+                Constants.LOG.debug("Found fluid: {} ({})", id, fluid);
+                count++;
             }
-        });
-        
-        // Ordenar las listas de fluidos por mod
-        for (List<Fluid> fluidList : FLUIDS_BY_MOD.values()) {
-            fluidList.sort(Comparator.comparing(fluid -> Registry.FLUID.getKey(fluid).getPath()));
+            Constants.LOG.debug("Total fluids found in registry: {}", count);
+            
+            // Recorrer todos los fluidos en el registro
+            Registry.FLUID.forEach(fluid -> {
+                // Excluir el fluido vacío y los fluidos "flowing"
+                if (fluid != Fluids.EMPTY && 
+                    fluid != Fluids.FLOWING_WATER && 
+                    fluid != Fluids.FLOWING_LAVA &&
+                    !Registry.FLUID.getKey(fluid).getPath().startsWith("flowing_")) {
+                    
+                    // Obtener el namespace (mod ID)
+                    ResourceLocation fluidId = Registry.FLUID.getKey(fluid);
+                    String modId = fluidId.getNamespace();
+                    
+                    // Casos especiales: agrupar fluidos específicos bajo "minecraft"
+                    if ("milk".equals(modId) || "milk".equals(fluidId.getPath())) {
+                        modId = "minecraft";
+                    }
+                    
+                    // Agregar el fluido al mapa central
+                    VALID_FLUIDS.put(fluidId, fluid);
+                    
+                    // Agregar el fluido a la lista del mod correspondiente
+                    FLUIDS_BY_MOD.computeIfAbsent(modId, k -> new ArrayList<>()).add(fluid);
+                }
+            });
+            
+            // Ordenar las listas de fluidos por mod
+            for (List<Fluid> fluidList : FLUIDS_BY_MOD.values()) {
+                fluidList.sort(Comparator.comparing(fluid -> Registry.FLUID.getKey(fluid).getPath()));
+            }
+            
+            Constants.LOG.info("FluidRegistryHelper initialized with {} valid fluids from {} mods", 
+                    VALID_FLUIDS.size(), FLUIDS_BY_MOD.size());
+                
+            // Registrar fluidos individuales para diagnóstico
+            VALID_FLUIDS.keySet().forEach(id -> 
+                Constants.LOG.debug("Registered valid fluid: {}", id));
+                
+            if (VALID_FLUIDS.size() <= 2) {
+                Constants.LOG.warn("Only {} fluids were found. Registry may not be fully initialized!", VALID_FLUIDS.size());
+            }
+        } catch (Exception e) {
+            Constants.LOG.error("Error initializing FluidRegistryHelper", e);
         }
-        
-        Constants.LOG.info("FluidRegistryHelper initialized fluids from {} mods", FLUIDS_BY_MOD.size());
         
         initialized = true;
     }

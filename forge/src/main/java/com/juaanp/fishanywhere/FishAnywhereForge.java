@@ -1,8 +1,10 @@
 package com.juaanp.fishanywhere;
 
 import com.juaanp.fishanywhere.client.ModConfigScreen;
+import com.juaanp.fishanywhere.config.CommonConfig;
 import com.juaanp.fishanywhere.config.ConfigHelper;
 import com.juaanp.fishanywhere.platform.ForgePlatformHelper;
+import com.juaanp.fishanywhere.util.FluidRegistryHelper;
 import com.mojang.logging.LogUtils;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ConfigScreenHandler;
@@ -67,7 +69,19 @@ public class FishAnywhereForge {
             
             // Aquí los registros ya deberían estar completos
             event.enqueueWork(() -> {
-                CommonClass.onFluidsAvailable();
+                Constants.LOG.info("Updating fluid registry in common setup phase...");
+                
+                // Forzar la reinicialización del registro de fluidos
+                FluidRegistryHelper.forceInitialize();
+                
+                // Verificar si necesitamos actualizar la configuración
+                if (CommonConfig.getInstance().getAllowedFluids().size() <= 2) {
+                    Constants.LOG.info("Updating configuration with complete fluid registry...");
+                    CommonConfig.getInstance().forceLoadAllFluids();
+                    
+                    // Guardar la configuración actualizada
+                    ConfigHelper.save();
+                }
             });
         }
     }

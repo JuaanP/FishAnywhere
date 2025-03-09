@@ -58,11 +58,14 @@ public class FabricPlatformHelper implements IPlatformHelper {
                     }
                 }
             } else {
-                Constants.LOG.info("Config file not found, creating default configuration");
+                Constants.LOG.info("Config file not found, creating default configuration with all fluids");
                 
-                // Inicializar FluidRegistryHelper y cargar todos los fluidos, ya que es la primera vez
+                // Asegurarnos de que la configuración se inicializa con valores por defecto
+                CommonConfig.getInstance().resetToDefaults();
+                
+                // Forzar la carga de todos los fluidos, independientemente del estado
                 FluidRegistryHelper.initialize();
-                CommonConfig.getInstance().loadAllFluids();
+                CommonConfig.getInstance().forceLoadAllFluids();
                 
                 saveConfig();
             }

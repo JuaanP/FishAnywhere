@@ -64,14 +64,22 @@ public class ForgePlatformHelper implements IPlatformHelper {
                         
                         // Marcar la configuración como limpia ya que acabamos de cargarla
                         CommonConfig.getInstance().markClean();
+                        
+                        // Verificar que la configuración tenga suficientes fluidos
+                        if (CommonConfig.getInstance().getAllowedFluids().size() <= 2) {
+                            Constants.LOG.warn("Configuración cargada pero con pocos fluidos. Se actualizará cuando los registros estén completos.");
+                        }
                     }
                 }
             } else {
-                Constants.LOG.info("Config file not found, creating default configuration");
+                Constants.LOG.info("Config file not found, initializing with default values");
                 
-                // Inicializar FluidRegistryHelper y cargar todos los fluidos, ya que es la primera vez
-                FluidRegistryHelper.initialize();
-                CommonConfig.getInstance().loadAllFluids();
+                // Asegurarnos de que la configuración se inicializa con valores por defecto
+                CommonConfig.getInstance().resetToDefaults();
+                
+                // Asegurarnos de cargar los fluidos disponibles hasta ahora
+                FluidRegistryHelper.forceInitialize();
+                CommonConfig.getInstance().forceLoadAllFluids();
                 
                 saveConfig();
             }

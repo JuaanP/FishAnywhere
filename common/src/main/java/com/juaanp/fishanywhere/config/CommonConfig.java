@@ -83,6 +83,36 @@ public class CommonConfig {
     }
 
     /**
+     * Fuerza la carga de todos los fluidos disponibles, independientemente del estado
+     * Esta función se usa principalmente cuando se genera una configuración nueva
+     */
+    public void forceLoadAllFluids() {
+        // Forzar reinicialización del registro de fluidos
+        FluidRegistryHelper.forceInitialize();
+        
+        // Verificar si tenemos suficientes fluidos registrados
+        Set<ResourceLocation> fluidIds = FluidRegistryHelper.getAllFluidIds();
+        
+        if (fluidIds.size() <= 2) {
+            Constants.LOG.warn("Muy pocos fluidos detectados ({}). ¡El registro podría no estar completo!", fluidIds.size());
+            // Añadir solo agua por ahora como mínimo
+            this.allowedFluids.clear();
+            this.allowedFluids.add(Registry.FLUID.getKey(Fluids.WATER));
+            
+            // Marcar como no cargado para forzar una recarga posterior
+            defaultFluidsLoaded = false;
+        } else {
+            // Tenemos suficientes fluidos, proceder normalmente
+            this.allowedFluids.clear();
+            this.allowedFluids.addAll(fluidIds);
+            Constants.LOG.info("Forced loading of {} fluid(s) into allowed fluids list", fluidIds.size());
+            defaultFluidsLoaded = true;
+        }
+        
+        this.dirty = true;
+    }
+
+    /**
      * Obtiene la instancia única de la configuración
      */
     public static CommonConfig getInstance() {
