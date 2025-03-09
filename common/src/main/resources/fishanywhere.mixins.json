@@ -1,9 +1,9 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.juaanp.${mod_id}.mixin",
+  "package": "com.juaanp.fishanywhere.mixin",
   "compatibilityLevel": "JAVA_17",
-  "refmap": "${mod_id}.refmap.json",
+  "refmap": "fishanywhere.refmap.json",
   "mixins": [
     "FishingHookMixin"
   ],
@@ -11,5 +11,5 @@
   "injectors": {
     "defaultRequire": 1
   },
-  "plugin": "com.juaanp.${mod_id}.mixin.MixinConfigPlugin"
+  "plugin": "com.juaanp.fishanywhere.mixin.MixinConfigPlugin"
 }

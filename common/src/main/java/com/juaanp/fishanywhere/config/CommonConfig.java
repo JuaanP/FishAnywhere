@@ -1,47 +1,82 @@
 package com.juaanp.fishanywhere.config;
 
+import com.juaanp.fishanywhere.Constants;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.juaanp.fishanywhere.Constants.DEFAULT_FORCE_OPEN_WATER;
-
+/**
+ * Configuración común compartida entre Fabric y Forge
+ */
 public class CommonConfig {
-    private static CommonConfig instance;
-
-    private boolean forceOpenWater;
+    private static final CommonConfig INSTANCE = new CommonConfig();
     
+    // Opciones de configuración
+    private boolean forceOpenWater;
     private Set<ResourceLocation> allowedFluids;
+    
+    // Indicador de si la configuración ha sido modificada
+    private boolean dirty = false;
 
+    /**
+     * Constructor privado para el patrón singleton
+     */
     private CommonConfig() {
-        this.forceOpenWater = DEFAULT_FORCE_OPEN_WATER;
+        resetToDefaults();
+    }
+    
+    /**
+     * Restaura todos los valores a sus configuraciones por defecto
+     */
+    public void resetToDefaults() {
+        this.forceOpenWater = Constants.DEFAULT_FORCE_OPEN_WATER;
         
         this.allowedFluids = new HashSet<>();
+        // Por defecto, permitir agua
         this.allowedFluids.add(Registry.FLUID.getKey(Fluids.WATER));
-        this.allowedFluids.add(Registry.FLUID.getKey(Fluids.LAVA));
-    }
-
-    public static CommonConfig getInstance() {
-        if (instance == null) {
-            instance = new CommonConfig();
+        
+        // Si estamos en modo desarrollo, permitimos lava por defecto para pruebas
+        if (ConfigHelper.isDevelopmentEnvironment()) {
+            this.allowedFluids.add(Registry.FLUID.getKey(Fluids.LAVA));
         }
-        return instance;
+        
+        this.dirty = true;
     }
 
+    /**
+     * Obtiene la instancia única de la configuración
+     */
+    public static CommonConfig getInstance() {
+        return INSTANCE;
+    }
+
+    /**
+     * Obtiene el valor predeterminado para forceOpenWater
+     */
     public static boolean getDefaultForceOpenWater() {
-        return DEFAULT_FORCE_OPEN_WATER;
+        return Constants.DEFAULT_FORCE_OPEN_WATER;
     }
 
+    /**
+     * Comprueba si el modo "Open Water" está forzado
+     */
     public boolean forceOpenWater() {
         return forceOpenWater;
     }
 
+    /**
+     * Establece si se debe forzar el modo "Open Water"
+     */
     public void setForceOpenWater(boolean forceOpenWater) {
-        this.forceOpenWater = forceOpenWater;
+        if (this.forceOpenWater != forceOpenWater) {
+            this.forceOpenWater = forceOpenWater;
+            this.dirty = true;
+        }
     }
     
     /**
@@ -81,10 +116,15 @@ public class CommonConfig {
             return;
         }
         
+        boolean changed;
         if (enabled) {
-            allowedFluids.add(fluidId);
+            changed = allowedFluids.add(fluidId);
         } else {
-            allowedFluids.remove(fluidId);
+            changed = allowedFluids.remove(fluidId);
+        }
+        
+        if (changed) {
+            this.dirty = true;
         }
     }
     
@@ -107,7 +147,7 @@ public class CommonConfig {
      * @return Conjunto de ResourceLocation con los IDs de fluidos permitidos
      */
     public Set<ResourceLocation> getAllowedFluids() {
-        return new HashSet<>(allowedFluids); // Devuelve una copia para evitar modificaciones directas
+        return Collections.unmodifiableSet(allowedFluids);
     }
     
     /**
@@ -115,6 +155,28 @@ public class CommonConfig {
      * @param allowedFluids Conjunto de ResourceLocation con los IDs de fluidos a permitir
      */
     public void setAllowedFluids(Set<ResourceLocation> allowedFluids) {
-        this.allowedFluids = new HashSet<>(allowedFluids); // Hace una copia para evitar cambios externos
+        if (allowedFluids == null) {
+            return;
+        }
+        
+        // Verificar si realmente hay cambios
+        if (!this.allowedFluids.equals(allowedFluids)) {
+            this.allowedFluids = new HashSet<>(allowedFluids);
+            this.dirty = true;
+        }
+    }
+    
+    /**
+     * Comprueba si la configuración ha sido modificada desde la última carga/guardado
+     */
+    public boolean isDirty() {
+        return dirty;
+    }
+    
+    /**
+     * Marca la configuración como guardada (no modificada)
+     */
+    public void markClean() {
+        this.dirty = false;
     }
 }

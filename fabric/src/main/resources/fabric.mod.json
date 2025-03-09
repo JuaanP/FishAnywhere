@@ -1,8 +1,8 @@
 {
     "schemaVersion": 1,
-    "id": "${mod_id}",
+    "id": "fishanywhere",
     "version": "${version}",
-    "name": "${mod_name}",
+    "name": "FishAnywhere",
     "description": "${description}",
     "authors": [
         "${mod_author}"
@@ -12,19 +12,19 @@
         "sources": "https://www.curseforge.com/members/juaanp/projects"
     },
     "license": "${license}",
-    "icon": "${mod_id}.png",
+    "icon": "fishanywhere.png",
     "environment": "*",
     "entrypoints": {
         "main": [
-          "com.juaanp.${mod_id}.${mod_name}Fabric"
+          "com.juaanp.fishanywhere.FishAnywhereFabric"
         ],
         "modmenu": [
-            "com.juaanp.${mod_id}.client.ModMenuIntegration"
+            "com.juaanp.fishanywhere.client.ModMenuIntegration"
         ]
     },
     "mixins": [
-        "${mod_id}.mixins.json",
-        "${mod_id}.fabric.mixins.json"
+        "fishanywhere.mixins.json",
+        "fishanywhere.fabric.mixins.json"
     ],
     "depends": {
         "fabricloader": "*",
