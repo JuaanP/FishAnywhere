@@ -10,6 +10,9 @@ public class FishAnywhereFabric implements ModInitializer {
         // Inicialización común
         CommonClass.init();
         
+        // Llamar a onFluidsAvailable cuando los registros estén completos
+        CommonClass.onFluidsAvailable();
+        
         // Registrar eventos del ciclo de vida del servidor
         registerLifecycleEvents();
     }

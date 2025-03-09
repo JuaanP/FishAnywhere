@@ -6,7 +6,6 @@ import com.juaanp.fishanywhere.Constants;
 import com.juaanp.fishanywhere.config.CommonConfig;
 import com.juaanp.fishanywhere.config.ConfigData;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.loading.FMLLoader;
 import net.minecraftforge.fml.loading.FMLPaths;
@@ -17,40 +16,17 @@ import java.io.Writer;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class ForgePlatformHelper implements IPlatformHelper {
-    // Configuración Forge para integración con la GUI de Forge
-    private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
-    
-    // Opción forceOpenWater para config Forge
-    public static final ForgeConfigSpec.BooleanValue FORCE_OPEN_WATER = BUILDER
-            .comment("Controls whether fishing should always be treated as in open water.")
-            .translation(Constants.MOD_ID + ".config.forceOpenWater")
-            .define("forceOpenWater", CommonConfig.getDefaultForceOpenWater());
-    
-    // Lista de fluidos permitidos para config Forge
-    public static final ForgeConfigSpec.ConfigValue<List<? extends String>> ALLOWED_FLUIDS = BUILDER
-            .comment("List of fluids where fishing is allowed.")
-            .translation(Constants.MOD_ID + ".config.allowedFluids")
-            .defineList("allowedFluids", 
-                    () -> List.of("minecraft:water"),
-                    obj -> obj instanceof String && ResourceLocation.isValidResourceLocation((String) obj));
-    
-    // Especificación completa
-    public static final ForgeConfigSpec SPEC = BUILDER.build();
-    
-    // Para manejo de JSON para compatibilidad con Fabric
+    // Para manejo de JSON para configuración
     private static final Gson GSON = new GsonBuilder()
             .setPrettyPrinting()
             .disableHtmlEscaping()
             .create();
     
-    // Archivo de configuración en formato JSON (para compatibilidad)
+    // Archivo de configuración en formato JSON
     private static final Path CONFIG_DIR = FMLPaths.CONFIGDIR.get();
     private static final Path CONFIG_FILE = CONFIG_DIR.resolve(Constants.MOD_ID + ".json");
     
@@ -74,23 +50,29 @@ public class ForgePlatformHelper implements IPlatformHelper {
 
     @Override
     public void loadConfig() {
-        // Primero intentamos cargar desde la configuración de Forge
-        applyForgeConfig();
-        
-        // Luego intentamos cargar desde el archivo JSON para compatibilidad con Fabric
-        // Esto permite transferir configs entre versiones Fabric y Forge
-        tryLoadFromJson();
-        
-        // Al final, actualizamos la configuración de Forge con los valores actuales
-        updateForgeConfig();
+        // Cargar desde el archivo JSON
+        try {
+            if (Files.exists(CONFIG_FILE)) {
+                try (Reader reader = Files.newBufferedReader(CONFIG_FILE)) {
+                    ConfigData configData = GSON.fromJson(reader, ConfigData.class);
+                    
+                    if (configData != null) {
+                        configData.applyTo(CommonConfig.getInstance());
+                        Constants.LOG.info("Configuration loaded from JSON file");
+                    }
+                }
+            } else {
+                Constants.LOG.info("Config file not found, creating default configuration");
+                saveConfig();
+            }
+        } catch (Exception e) {
+            Constants.LOG.error("Error loading configuration", e);
+            createConfigBackup("error");
+        }
     }
 
     @Override
     public void saveConfig() {
-        // Actualizar la configuración de Forge
-        updateForgeConfig();
-        
-        // Guardar también en formato JSON para compatibilidad
         try {
             // Asegurarse de que el directorio existe
             Files.createDirectories(CONFIG_FILE.getParent());
@@ -110,7 +92,7 @@ public class ForgePlatformHelper implements IPlatformHelper {
             
             Constants.LOG.debug("Configuration saved successfully to {}", CONFIG_FILE);
         } catch (IOException e) {
-            Constants.LOG.error("Error saving configuration to JSON", e);
+            Constants.LOG.error("Error saving configuration", e);
         }
     }
 
@@ -130,77 +112,6 @@ public class ForgePlatformHelper implements IPlatformHelper {
             }
         } catch (IOException e) {
             Constants.LOG.error("Failed to create configuration backup", e);
-        }
-    }
-    
-    /**
-     * Aplica la configuración de Forge a CommonConfig
-     */
-    private void applyForgeConfig() {
-        try {
-            CommonConfig config = CommonConfig.getInstance();
-            
-            // Aplicar forceOpenWater
-            config.setForceOpenWater(FORCE_OPEN_WATER.get());
-            
-            // Aplicar fluidos permitidos
-            Set<ResourceLocation> allowedFluids = new HashSet<>();
-            for (String fluidId : ALLOWED_FLUIDS.get()) {
-                try {
-                    allowedFluids.add(new ResourceLocation(fluidId));
-                } catch (Exception e) {
-                    Constants.LOG.warn("Invalid fluid ID in config: {}", fluidId);
-                }
-            }
-            
-            config.setAllowedFluids(allowedFluids);
-            
-            Constants.LOG.info("Forge configuration applied successfully");
-        } catch (Exception e) {
-            Constants.LOG.error("Error applying Forge configuration", e);
-        }
-    }
-    
-    /**
-     * Actualiza la configuración de Forge con los valores de CommonConfig
-     */
-    private void updateForgeConfig() {
-        try {
-            CommonConfig config = CommonConfig.getInstance();
-            
-            // Actualizar forceOpenWater
-            FORCE_OPEN_WATER.set(config.forceOpenWater());
-            
-            // Actualizar fluidos permitidos
-            List<String> fluidIds = config.getAllowedFluids().stream()
-                    .map(ResourceLocation::toString)
-                    .collect(Collectors.toCollection(ArrayList::new));
-            
-            ALLOWED_FLUIDS.set(fluidIds);
-            
-            Constants.LOG.debug("Forge configuration updated successfully");
-        } catch (Exception e) {
-            Constants.LOG.error("Error updating Forge configuration", e);
-        }
-    }
-    
-    /**
-     * Intenta cargar la configuración desde el archivo JSON para compatibilidad
-     */
-    private void tryLoadFromJson() {
-        if (!Files.exists(CONFIG_FILE)) {
-            return;
-        }
-
-        try (Reader reader = Files.newBufferedReader(CONFIG_FILE)) {
-            ConfigData configData = GSON.fromJson(reader, ConfigData.class);
-            
-            if (configData != null) {
-                configData.applyTo(CommonConfig.getInstance());
-                Constants.LOG.info("Configuration loaded from JSON for compatibility");
-            }
-        } catch (Exception e) {
-            Constants.LOG.error("Error loading configuration from JSON", e);
         }
     }
 }

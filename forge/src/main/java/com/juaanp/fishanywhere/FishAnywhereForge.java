@@ -24,18 +24,27 @@ public class FishAnywhereForge {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     public FishAnywhereForge() {
-        // Registrar eventos de Forge
-        MinecraftForge.EVENT_BUS.register(this);
-        
-        // Registrar configuración de Forge
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, ForgePlatformHelper.SPEC);
-        
-        // Inicialización común
-        CommonClass.init();
-        
-        // Configurar Mixins
-        MixinBootstrap.init();
-        Mixins.addConfiguration(Constants.MOD_ID +".forge.mixins.json");
+        try {
+            // Registrar eventos de Forge
+            MinecraftForge.EVENT_BUS.register(this);
+            
+            // Inicialización común
+            CommonClass.init();
+            
+            // Configurar Mixins - manejo de excepciones mejorado
+            try {
+                MixinBootstrap.init();
+                Mixins.addConfiguration(Constants.MOD_ID +".forge.mixins.json");
+                Constants.LOG.info("Mixins initialized successfully");
+            } catch (Exception e) {
+                Constants.LOG.error("Error initializing mixins, continuing without them", e);
+                // En entorno de desarrollo, podemos continuar sin mixins
+                // En producción, esto podría causar problemas
+            }
+        } catch (Exception e) {
+            Constants.LOG.error("Error during mod initialization", e);
+            // Manejar errores de inicialización de manera más robusta
+        }
     }
     
     @SubscribeEvent
@@ -55,6 +64,11 @@ public class FishAnywhereForge {
         @SubscribeEvent
         public static void onCommonSetup(FMLCommonSetupEvent event) {
             LOGGER.info("FishAnywhere common setup...");
+            
+            // Aquí los registros ya deberían estar completos
+            event.enqueueWork(() -> {
+                CommonClass.onFluidsAvailable();
+            });
         }
     }
 

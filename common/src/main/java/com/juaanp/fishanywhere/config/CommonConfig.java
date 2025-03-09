@@ -1,6 +1,7 @@
 package com.juaanp.fishanywhere.config;
 
 import com.juaanp.fishanywhere.Constants;
+import com.juaanp.fishanywhere.util.FluidRegistryHelper;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
@@ -22,12 +23,19 @@ public class CommonConfig {
     
     // Indicador de si la configuración ha sido modificada
     private boolean dirty = false;
+    
+    // Indicador de si los fluidos por defecto ya fueron cargados
+    private boolean defaultFluidsLoaded = false;
 
     /**
      * Constructor privado para el patrón singleton
      */
     private CommonConfig() {
-        resetToDefaults();
+        // Inicialización básica con valores por defecto
+        this.forceOpenWater = Constants.DEFAULT_FORCE_OPEN_WATER;
+        this.allowedFluids = new HashSet<>();
+        // Siempre incluir agua como mínimo
+        this.allowedFluids.add(Registry.FLUID.getKey(Fluids.WATER));
     }
     
     /**
@@ -37,14 +45,33 @@ public class CommonConfig {
         this.forceOpenWater = Constants.DEFAULT_FORCE_OPEN_WATER;
         
         this.allowedFluids = new HashSet<>();
-        // Por defecto, permitir agua
-        this.allowedFluids.add(Registry.FLUID.getKey(Fluids.WATER));
         
-        // Si estamos en modo desarrollo, permitimos lava por defecto para pruebas
-        if (ConfigHelper.isDevelopmentEnvironment()) {
-            this.allowedFluids.add(Registry.FLUID.getKey(Fluids.LAVA));
+        // Cargar todos los fluidos disponibles
+        loadAllFluids();
+        
+        this.dirty = true;
+    }
+    
+    /**
+     * Carga todos los fluidos disponibles en el registro
+     * Esta función se puede llamar en diferentes momentos del ciclo de vida del juego
+     */
+    public void loadAllFluids() {
+        if (defaultFluidsLoaded) {
+            return; // Evitar cargar múltiples veces
         }
         
+        // Inicializar FluidRegistryHelper si no se ha hecho
+        FluidRegistryHelper.initialize();
+        
+        // Obtener todos los IDs de fluidos válidos
+        Set<ResourceLocation> fluidIds = FluidRegistryHelper.getAllFluidIds();
+        
+        // Añadir todos los fluidos a la lista de permitidos
+        this.allowedFluids.addAll(fluidIds);
+        
+        Constants.LOG.info("Loaded {} fluid(s) into allowed fluids list", fluidIds.size());
+        defaultFluidsLoaded = true;
         this.dirty = true;
     }
 

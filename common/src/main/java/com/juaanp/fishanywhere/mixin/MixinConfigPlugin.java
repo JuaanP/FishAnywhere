@@ -11,6 +11,9 @@ import java.util.Set;
 public class MixinConfigPlugin implements IMixinConfigPlugin {
     private static final String FORGE_MARKER_CLASS = "net.minecraftforge.fml.common.Mod";
     private static final boolean IS_FORGE = isClassPresent(FORGE_MARKER_CLASS);
+    
+    // Es entorno de desarrollo
+    private static final boolean IS_DEV_ENV = isDevEnvironment();
 
     private static boolean isClassPresent(String className) {
         try {
@@ -20,9 +23,17 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
             return false;
         }
     }
+    
+    private static boolean isDevEnvironment() {
+        // Comprobar algunas condiciones comunes para entornos de desarrollo
+        return System.getProperty("fishanywhere.development") != null || 
+               System.getProperty("forge.logging.markers", "").contains("SCAN") ||
+               System.getProperty("fabric.development") != null;
+    }
 
     @Override
     public void onLoad(String mixinPackage) {
+        Constants.LOG.info("Loading mixins for " + mixinPackage + " (Forge: " + IS_FORGE + ", Dev: " + IS_DEV_ENV + ")");
     }
 
     @Override
@@ -32,9 +43,17 @@ public class MixinConfigPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
+        // Para Forge, evitamos nuestro mixin común y usamos el específico de Forge
         if (IS_FORGE && mixinClassName.equals("com.juaanp." + Constants.MOD_ID + ".mixin.FishingHookMixin")) {
+            Constants.LOG.debug("Skipping common mixin " + mixinClassName + " in Forge environment");
             return false;
         }
+        
+        // En entornos de desarrollo, podemos ser más permisivos si hay errores
+        if (IS_DEV_ENV) {
+            Constants.LOG.debug("Applying mixin " + mixinClassName + " to " + targetClassName + " in development environment");
+        }
+        
         return true;
     }
 

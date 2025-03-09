@@ -24,6 +24,7 @@
     import net.minecraft.world.level.material.Fluids;
     import net.minecraft.client.resources.sounds.SimpleSoundInstance;
     import net.minecraft.sounds.SoundEvents;
+    import com.juaanp.fishanywhere.util.FluidRegistryHelper;
 
     import java.util.ArrayList;
     import java.util.Comparator;
@@ -212,52 +213,26 @@
                 this.setRenderBackground(false);
                 this.setRenderTopAndBottom(false);
                 
-                // Obtener todos los fluidos y organizarlos por mod
-                Map<String, List<Fluid>> fluidsByMod = new TreeMap<>();
+                // Obtener fluidos agrupados por mod desde el helper
+                Map<String, List<Fluid>> fluidsByMod = FluidRegistryHelper.getFluidsByMod();
                 
-                Registry.FLUID.forEach(fluid -> {
-                    // Excluir el fluido vacío y los fluidos "flowing"
-                    if (fluid != Fluids.EMPTY && 
-                        fluid != Fluids.FLOWING_WATER && 
-                        fluid != Fluids.FLOWING_LAVA &&
-                        !Registry.FLUID.getKey(fluid).getPath().startsWith("flowing_")) {
-                        
-                        // Obtener el namespace (mod ID)
-                        ResourceLocation fluidId = Registry.FLUID.getKey(fluid);
-                        String modId = fluidId.getNamespace();
-                        
-                        // Casos especiales: agrupar fluidos específicos bajo "minecraft"
-                        if ("milk".equals(modId) || "milk".equals(fluidId.getPath())) {
-                            modId = "minecraft";
-                        }
-                        
-                        // Agregar el fluido a la lista del mod correspondiente
-                        fluidsByMod.computeIfAbsent(modId, k -> new ArrayList<>()).add(fluid);
-                    }
-                });
-                
-                // Conjunto de fluidos habilitados
-                Set<ResourceLocation> allowedFluids = CommonConfig.getInstance().getAllowedFluids();
-                
-                // Para cada mod, añadir un separador y luego sus fluidos
+                // Crear encabezados y entradas para cada mod
                 for (Map.Entry<String, List<Fluid>> entry : fluidsByMod.entrySet()) {
                     String modId = entry.getKey();
-                    List<Fluid> modFluids = entry.getValue();
+                    List<Fluid> fluids = entry.getValue();
                     
-                    // Añadir un encabezado para el mod
-                    this.addEntry(new ModHeaderEntry(modId));
-                    
-                    // Ordenar los fluidos de este mod por nombre
-                    List<Fluid> sortedModFluids = modFluids.stream()
-                        .sorted(Comparator.comparing(fluid -> 
-                            Registry.FLUID.getKey(fluid).getPath()))
-                        .collect(Collectors.toList());
-                    
-                    // Añadir cada fluido del mod
-                    for (Fluid fluid : sortedModFluids) {
-                        ResourceLocation fluidId = Registry.FLUID.getKey(fluid);
-                        boolean isEnabled = allowedFluids.contains(fluidId);
-                        this.addEntry(new FluidEntry(fluid, fluidId, isEnabled));
+                    // Solo mostrar encabezados y fluidos si hay fluidos disponibles
+                    if (!fluids.isEmpty()) {
+                        // Crear un encabezado para el mod
+                        this.addEntry(new ModHeaderEntry(modId));
+                        
+                        // Añadir cada fluido del mod como una entrada
+                        for (Fluid fluid : fluids) {
+                            ResourceLocation fluidId = Registry.FLUID.getKey(fluid);
+                            boolean enabled = CommonConfig.getInstance().isFluidAllowed(fluid);
+                            
+                            this.addEntry(new FluidEntry(fluid, fluidId, enabled));
+                        }
                     }
                 }
             }
