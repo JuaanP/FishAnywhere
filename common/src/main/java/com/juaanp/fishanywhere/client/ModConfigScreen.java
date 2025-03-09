@@ -341,21 +341,46 @@
                     this.enabled = enabled;
                     this.displayName = formatFluidName(fluid);
 
-                    // Obtener el sprite del fluido - enfoque compatible con 1.19.2
+                    // Obtener el sprite del fluido - enfoque compatible con múltiples loaders
                     TextureAtlasSprite sprite = null;
-
-                    // En 1.19.2 necesitamos usar un enfoque diferente para obtener la textura del fluido
+                    
+                    // Fluidos vanilla - sabemos exactamente dónde están sus texturas
                     if (fluid == Fluids.WATER) {
                         sprite = minecraft.getTextureAtlas(BLOCK_ATLAS).apply(new ResourceLocation("minecraft", "block/water_still"));
-                    }
+                    } 
                     else if (fluid == Fluids.LAVA) {
                         sprite = minecraft.getTextureAtlas(BLOCK_ATLAS).apply(new ResourceLocation("minecraft", "block/lava_still"));
                     }
                     else {
-                        // Para otros fluidos, intentamos inferir la textura basada en convenciones de naming
-                        // Esto es una aproximación y puede no funcionar para todos los fluidos modded
-                        String path = "block/" + fluidId.getPath() + "_still";
-                        sprite = minecraft.getTextureAtlas(BLOCK_ATLAS).apply(new ResourceLocation(fluidId.getNamespace(), path));
+                        // Para fluidos modded - intentar múltiples convenciones de naming conocidas
+                        String modId = fluidId.getNamespace();
+                        String fluidName = fluidId.getPath();
+                        
+                        // Lista de posibles patrones para la ubicación de la textura
+                        String[] possiblePaths = {
+                            "block/" + fluidName + "_still",
+                            "blocks/" + fluidName + "_still",
+                            "fluids/" + fluidName + "_still",
+                            "fluid/" + fluidName + "_still",
+                            "block/fluid/" + fluidName + "_still",
+                            "blocks/fluid/" + fluidName + "_still",
+                            "block/" + fluidName,
+                            "blocks/" + fluidName,
+                            "fluids/" + fluidName,
+                            "fluid/" + fluidName
+                        };
+                        
+                        // Intentar cada patrón posible hasta encontrar uno que funcione
+                        for (String path : possiblePaths) {
+                            ResourceLocation textureLocation = new ResourceLocation(modId, path);
+                            TextureAtlasSprite testSprite = minecraft.getTextureAtlas(BLOCK_ATLAS).apply(textureLocation);
+                            
+                            // Verificar si el sprite es válido (no es el sprite por defecto)
+                            if (testSprite != null && !testSprite.getName().toString().contains("minecraft:missingno")) {
+                                sprite = testSprite;
+                                break;
+                            }
+                        }
                     }
 
                     this.fluidSprite = sprite;
