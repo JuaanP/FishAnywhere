@@ -41,7 +41,7 @@
 
         // Constantes de posición y dimensiones - DISEÑO DE TRES SECCIONES
         private static final int TITLE_SECTION_HEIGHT = 30;           // Sección superior para título
-        private static final int OPTIONS_SECTION_HEIGHT = 100;        // Sección media para opciones
+        private static final int OPTIONS_SECTION_HEIGHT = 60;         // Reducido de 100 a 60
         private static final int OPTIONS_SECTION_TOP = TITLE_SECTION_HEIGHT;
         private static final int FLUIDS_SECTION_TOP = OPTIONS_SECTION_TOP + OPTIONS_SECTION_HEIGHT;
         private static final int BOTTOM_BUTTON_SECTION_HEIGHT = 40;   // Espacio para botones inferiores
@@ -66,14 +66,16 @@
         protected void init() {
             // SECCIÓN 1: TÍTULO (ya se renderiza automáticamente)
 
-            // SECCIÓN 2: OPCIONES
+            // SECCIÓN 2: OPCIONES - Ajustada la posición vertical del botón para centrarlo
+            int optionsCenterY = OPTIONS_SECTION_TOP + (OPTIONS_SECTION_HEIGHT / 2) - 10; // Centro vertical (-10 para ajustar por altura del botón)
+            
             // Botón forceOpenWater con tooltip
             this.forceOpenWaterButton = CycleButton.onOffBuilder(getforceOpenWater())
                     .withTooltip(value -> {
                         Component tooltip = Component.translatable(Constants.MOD_ID + ".config.forceOpenWater.tooltip");
                         return this.minecraft.font.split(tooltip, 200);
                     })
-                    .create(this.width / 2 - 150, OPTIONS_SECTION_TOP + 30, 300, 20,
+                    .create(this.width / 2 - 150, optionsCenterY, 300, 20,
                            FORCE_OPEN_WATER,
                            (button, value) -> setforceOpenWater(value));
 
