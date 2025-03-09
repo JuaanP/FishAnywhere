@@ -116,7 +116,7 @@
 
             // --- SECCIÓN 2: OPCIONES ---
             // Título de opciones
-            drawCenteredString(poseStack, this.font, OPTIONS_TITLE, this.width / 2, OPTIONS_SECTION_TOP + 10, 0xFFFFFF);
+            //drawCenteredString(poseStack, this.font, OPTIONS_TITLE, this.width / 2, OPTIONS_SECTION_TOP + 10, 0xFFFFFF);
 
             // Separador después de la sección de opciones
             fill(poseStack, 0, FLUIDS_SECTION_TOP - 5, this.width, FLUIDS_SECTION_TOP - 4, 0x66FFFFFF);
