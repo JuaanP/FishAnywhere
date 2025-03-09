@@ -206,7 +206,6 @@
                       ModConfigScreen.this.width,
                       height,
                       FLUIDS_SECTION_TOP + 20,
-                      // Asegurar que la lista termina antes del inicio de la sección de botones
                       ModConfigScreen.this.height - BOTTOM_BUTTON_SECTION_HEIGHT,
                       FLUIDS_LIST_ITEM_HEIGHT);
                 
@@ -224,7 +223,13 @@
                         !Registry.FLUID.getKey(fluid).getPath().startsWith("flowing_")) {
                         
                         // Obtener el namespace (mod ID)
-                        String modId = Registry.FLUID.getKey(fluid).getNamespace();
+                        ResourceLocation fluidId = Registry.FLUID.getKey(fluid);
+                        String modId = fluidId.getNamespace();
+                        
+                        // Casos especiales: agrupar fluidos específicos bajo "minecraft"
+                        if ("milk".equals(modId) || "milk".equals(fluidId.getPath())) {
+                            modId = "minecraft";
+                        }
                         
                         // Agregar el fluido a la lista del mod correspondiente
                         fluidsByMod.computeIfAbsent(modId, k -> new ArrayList<>()).add(fluid);
