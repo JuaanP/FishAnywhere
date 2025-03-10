@@ -115,9 +115,13 @@ public class ModConfigScreen extends Screen {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        // Fondo
+        // Primero, dibujar el fondo
         this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         
+        // Renderizar widgets (botones, listas, etc.)
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        
+        // Luego, dibujar los textos y otros elementos ENCIMA del fondo y widgets
         // --- SECCIÓN 1: TÍTULO ---
         guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 5, 0xFFFFFF);
 
@@ -128,9 +132,7 @@ public class ModConfigScreen extends Screen {
         // --- SECCIÓN 3: LISTA DE FLUIDOS ---
         // Título de fluidos
         guiGraphics.drawCenteredString(this.font, FLUIDS_TITLE, this.width / 2, FLUIDS_SECTION_TOP + 5, 0xFFFFFF);
-
-        // Renderizar widgets y finalizar
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        
         setResetButtonState(isAnyNonDefault());
     }
 
@@ -148,7 +150,7 @@ public class ModConfigScreen extends Screen {
         boolean fluidsChanged = false;
         Set<ResourceLocation> allowedFluids = CommonConfig.getInstance().getAllowedFluids();
         Set<ResourceLocation> allValidFluidIds = FluidRegistryHelper.getAllFluidIds();
-        
+
         // Si no todos los fluidos válidos están permitidos, o si hay fluidos permitidos
         // que no están en la lista de válidos, entonces consideramos que ha cambiado
         if (allowedFluids.size() != allValidFluidIds.size() || !allowedFluids.containsAll(allValidFluidIds)) {
@@ -167,7 +169,7 @@ public class ModConfigScreen extends Screen {
         // Restablecer fluidos permitidos a todos los disponibles
         // en lugar de hacerlo manualmente, usamos el método del CommonConfig
         CommonConfig.getInstance().resetToDefaults();
-        
+
         // Asegurarnos de forzar la carga de todos los fluidos
         FluidRegistryHelper.forceInitialize();
         CommonConfig.getInstance().forceLoadAllFluids();
@@ -210,32 +212,32 @@ public class ModConfigScreen extends Screen {
     class FluidSelectionList extends ObjectSelectionList<FluidSelectionList.AbstractFluidEntry> {
         // Nueva clase base abstracta para entradas de la lista
         abstract class AbstractFluidEntry extends ObjectSelectionList.Entry<AbstractFluidEntry> {}
-        
+
         public FluidSelectionList(Minecraft minecraft, int height) {
             super(minecraft,
                   ModConfigScreen.this.width,
                   height,
                   FLUIDS_SECTION_TOP + 20,
-                  ModConfigScreen.this.height - BOTTOM_BUTTON_SECTION_HEIGHT - 5);
-            
+                  FLUIDS_LIST_ITEM_HEIGHT);
+
             // Obtener fluidos agrupados por mod desde el helper
             Map<String, List<Fluid>> fluidsByMod = FluidRegistryHelper.getFluidsByMod();
-            
+
             // Crear encabezados y entradas para cada mod
             for (Map.Entry<String, List<Fluid>> entry : fluidsByMod.entrySet()) {
                 String modId = entry.getKey();
                 List<Fluid> fluids = entry.getValue();
-                
+
                 // Solo mostrar encabezados y fluidos si hay fluidos disponibles
                 if (!fluids.isEmpty()) {
                     // Crear un encabezado para el mod
                     this.addEntry(new ModHeaderEntry(modId));
-                    
+
                     // Añadir cada fluido del mod como una entrada
                     for (Fluid fluid : fluids) {
                         ResourceLocation fluidId = BuiltInRegistries.FLUID.getKey(fluid);
                         boolean enabled = CommonConfig.getInstance().isFluidAllowed(fluid);
-                        
+
                         this.addEntry(new FluidEntry(fluid, fluidId, enabled));
                     }
                 }
@@ -243,39 +245,60 @@ public class ModConfigScreen extends Screen {
         }
 
         @Override
+        public int getHeight() {
+            return ModConfigScreen.this.height - BOTTOM_BUTTON_SECTION_HEIGHT;
+        }
+
+        @Override
         public int getRowWidth() {
             return width - 40; // Margen de 20px a cada lado
         }
-        
+
         @Override
-        protected void renderItem(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, 
-                                int index, int left, int top, int width, int height) {
-            // Reducir el espacio vertical efectivo para cada elemento
-            super.renderItem(guiGraphics, mouseX, mouseY, partialTick, index, left, top, width, height - 2);
+        protected int getScrollbarPosition() {
+            return width - 10; // Posición de la barra de desplazamiento
         }
 
         @Override
         public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
             // Calcular el límite inferior exacto
-            int bottomLimit = ModConfigScreen.this.height - BOTTOM_BUTTON_SECTION_HEIGHT + 5;
-            
-            // Dibujar con recorte (scissor)
-            var rect = this.getRectangle();
-            guiGraphics.pose().pushPose();
-            guiGraphics.enableScissor(
-                rect.left(),
-                rect.top(),
-                rect.width(),
-                bottomLimit - rect.top()
+            int bottomLimit = ModConfigScreen.this.height - BOTTOM_BUTTON_SECTION_HEIGHT;
+
+            // Configurar un scissor test para recortar cualquier renderizado fuera de los límites
+            int scissorLeft = this.getX();
+            int scissorTop = this.getY();
+            int scissorRight = this.getRight();
+            int scissorBottom = bottomLimit;
+
+            // Ajustar coordenadas para escala del GUI
+            double scale = ModConfigScreen.this.minecraft.getWindow().getGuiScale();
+            int guiScaledWidth = ModConfigScreen.this.minecraft.getWindow().getGuiScaledWidth();
+            int guiScaledHeight = ModConfigScreen.this.minecraft.getWindow().getGuiScaledHeight();
+
+            // Convertir coordenadas GUI a coordenadas de ventana
+            int windowScissorLeft = (int)(scissorLeft * scale);
+            int windowScissorBottom = (int)(guiScaledHeight * scale) - (int)(scissorBottom * scale);
+            int windowScissorRight = (int)(scissorRight * scale);
+            int windowScissorTop = (int)(guiScaledHeight * scale) - (int)(scissorTop * scale);
+
+            // Habilitar scissor test
+            RenderSystem.enableScissor(
+                windowScissorLeft,
+                windowScissorBottom,
+                windowScissorRight - windowScissorLeft,
+                windowScissorTop - windowScissorBottom
             );
-            
+
+            // Renderizar la lista con el recorte aplicado
             super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
-            
-            guiGraphics.disableScissor();
-            guiGraphics.pose().popPose();
-            
+
+            // Desactivar scissor test
+            RenderSystem.disableScissor();
+
             // Dibujar separador
-            guiGraphics.fill(0, bottomLimit - 1, ModConfigScreen.this.width, bottomLimit, 0x66FFFFFF);
+            guiGraphics.fill(0, bottomLimit - 1,
+                 ModConfigScreen.this.width, bottomLimit,
+                 0x66FFFFFF);
         }
 
         @Override
@@ -283,51 +306,78 @@ public class ModConfigScreen extends Screen {
             super.updateWidgetNarration(output);
         }
 
+        @Override
+        public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+            AbstractFluidEntry selected = this.getSelected();
+
+            // Si tenemos un elemento seleccionado y es un FluidEntry, delegamos el evento de teclado
+            if (selected instanceof FluidEntry) {
+                FluidEntry fluidEntry = (FluidEntry) selected;
+
+                // Manejar Enter, Space y Numpad Enter
+                if (keyCode == 257 || keyCode == 32 || keyCode == 335) {
+                    // Reproducir sonido
+                    minecraft.getSoundManager().play(
+                        SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F)
+                    );
+
+                    // Alternar el estado
+                    fluidEntry.toggleEnabled();
+                    return true;
+                }
+            }
+
+            // Para otras teclas, usar el comportamiento por defecto
+            return super.keyPressed(keyCode, scanCode, modifiers);
+        }
+
+        @Override
+        public boolean mouseClicked(double mouseX, double mouseY, int button) {
+            ModConfigScreen.this.setFocused(this);
+            return super.mouseClicked(mouseX, mouseY, button);
+        }
+
         // Clase para encabezados de mod - ahora extiende AbstractFluidEntry
         class ModHeaderEntry extends AbstractFluidEntry {
             private final Component modName;
-            
+
             public ModHeaderEntry(String modId) {
                 this.modName = formatModName(modId);
             }
-            
+
             @Override
             public Component getNarration() {
                 return Component.translatable("narrator.select", this.modName);
             }
-            
+
             @Override
             public boolean mouseClicked(double mouseX, double mouseY, int button) {
                 return super.mouseClicked(mouseX, mouseY, button);
             }
-            
+
             @Override
-            public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, 
+            public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height,
                              int mouseX, int mouseY, boolean isHovered, float partialTick) {
-                // Hacer el encabezado más compacto
-                top += 1;
-                height -= 2;
-                
-                // Ajustar el encabezado para que sea más compacto
-                guiGraphics.fill(left, top, left + width, top + height, 0x66000000);
-                
+                // Dibujar un fondo para el encabezado del mod
+                guiGraphics.fill(left, top, left + width, top + height, 0x44000000);
+
                 // Dibujar el nombre del mod centrado y en negrita - ajustar posición vertical
                 Font font = ModConfigScreen.this.font;
                 int textWidth = font.width(this.modName);
-                guiGraphics.drawString(font, this.modName, 
-                          left + width / 2 - textWidth / 2, top + (height - 8) / 2, 0xFFFF55);
-                
+                guiGraphics.drawString(font, this.modName,
+                          left + width / 2 - textWidth / 2, top + 5, 0xFFFF55);
+
                 // Dibujar líneas decorativas a los lados del nombre
                 int lineY = top + height / 2;
                 int linePadding = 10;
                 int lineWidth = (width - textWidth) / 2 - linePadding * 2;
-                
+
                 if (lineWidth > 5) {
                     guiGraphics.fill(left + linePadding, lineY, left + linePadding + lineWidth, lineY + 1, 0x44FFFFFF);
                     guiGraphics.fill(left + width - linePadding - lineWidth, lineY, left + width - linePadding, lineY + 1, 0x44FFFFFF);
                 }
             }
-            
+
             /**
              * Formatea el ID del mod para mostrarlo de forma legible
              */
@@ -335,12 +385,12 @@ public class ModConfigScreen extends Screen {
                 if ("minecraft".equals(modId)) {
                     return Component.literal("Minecraft");
                 }
-                
+
                 // Convertir el modId a Title Case
                 String formattedName = java.util.Arrays.stream(modId.split("_"))
                     .map(word -> word.isEmpty() ? "" : word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase())
                     .collect(Collectors.joining(" "));
-                
+
                 return Component.literal(formattedName);
             }
         }
@@ -352,7 +402,7 @@ public class ModConfigScreen extends Screen {
             private boolean enabled;
             private final Component displayName;
             private final TextureAtlasSprite fluidSprite;
-            private final int iconSize = 12; // Reducido de 16 a 12
+            private final int iconSize = 16;
             private long lastClickTime;
 
             public FluidEntry(Fluid fluid, ResourceLocation fluidId, boolean enabled) {
@@ -363,11 +413,11 @@ public class ModConfigScreen extends Screen {
 
                 // Obtener el sprite del fluido - enfoque compatible con múltiples loaders
                 TextureAtlasSprite sprite = null;
-                
+
                 // Fluidos vanilla - sabemos exactamente dónde están sus texturas
                 if (fluid == Fluids.WATER) {
                     sprite = minecraft.getTextureAtlas(BLOCK_ATLAS).apply(ResourceLocation.withDefaultNamespace("block/water_still"));
-                } 
+                }
                 else if (fluid == Fluids.LAVA) {
                     sprite = minecraft.getTextureAtlas(BLOCK_ATLAS).apply(ResourceLocation.withDefaultNamespace("block/lava_still"));
                 }
@@ -375,7 +425,7 @@ public class ModConfigScreen extends Screen {
                     // Para fluidos modded - intentar múltiples convenciones de naming conocidas
                     String modId = fluidId.getNamespace();
                     String fluidName = fluidId.getPath();
-                    
+
                     // Lista de posibles patrones para la ubicación de la textura
                     String[] possiblePaths = {
                         "block/" + fluidName + "_still",
@@ -389,12 +439,12 @@ public class ModConfigScreen extends Screen {
                         "fluids/" + fluidName,
                         "fluid/" + fluidName
                     };
-                    
+
                     // Intentar cada patrón posible hasta encontrar uno que funcione
                     for (String path : possiblePaths) {
                         ResourceLocation textureLocation = ResourceLocation.fromNamespaceAndPath(modId, path);
                         TextureAtlasSprite testSprite = minecraft.getTextureAtlas(BLOCK_ATLAS).apply(textureLocation);
-                        
+
                         // Verificar si el sprite es válido (no es el sprite por defecto)
                         if (testSprite != null && !testSprite.toString().contains("minecraft:missingno")) {
                             sprite = testSprite;
@@ -420,7 +470,7 @@ public class ModConfigScreen extends Screen {
                     minecraft.getSoundManager().play(
                         SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F)
                     );
-                    
+
                     this.toggleEnabled();
                     return true;
                 }
@@ -434,7 +484,7 @@ public class ModConfigScreen extends Screen {
                     minecraft.getSoundManager().play(
                         SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F)
                     );
-                    
+
                     this.toggleEnabled();
                     return true;
                 } else {
@@ -450,31 +500,27 @@ public class ModConfigScreen extends Screen {
 
             @Override
             public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isHovered, float partialTick) {
-                // Para hacer los elementos más compactos, ajustamos visualmente
-                top += 1;
-                height -= 2;
-                
                 int textColor = 0xFFFFFF;
                 if (isHovered) {
                     // Dibujar un fondo resaltado cuando el ratón está encima
                     guiGraphics.fill(left, top, left + width, top + height, 0x80FFFFFF);
                     textColor = 0xFFFF00;
                 }
-                
+
                 // Renderizar el icono del fluido
                 if (fluidSprite != null) {
                     RenderSystem.setShaderTexture(0, BLOCK_ATLAS);
-                    
+
                     // Aplicar color solo para fluidos específicos que lo necesitan
                     if (fluid == Fluids.WATER) {
                         // Color azul reconocible para el agua
                         RenderSystem.setShaderColor(0.25F, 0.47F, 0.9F, 1.0F);
-                    } 
+                    }
                     else {
                         // Para otros fluidos, no aplicar tinte
                         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
                     }
-                    
+
                     // Dibujar el sprite
                     guiGraphics.blit(
                          left + 5,                       // x
@@ -483,20 +529,20 @@ public class ModConfigScreen extends Screen {
                          iconSize,                       // width
                          iconSize,                       // height
                          this.fluidSprite);
-                    
+
                     // Restaurar color por defecto después de dibujar
                     RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
                 }
-                
-                // Renderizar el nombre del fluido a la derecha del icono - ajustar posición vertical
-                guiGraphics.drawString(ModConfigScreen.this.font, this.displayName, 
-                           left + iconSize + 8, top + (height - 8) / 2, textColor);
-                
-                // Indicador de estado - ajustar posición vertical
+
+                // Renderizar el nombre del fluido a la derecha del icono
+                guiGraphics.drawString(ModConfigScreen.this.font, this.displayName,
+                           left + iconSize + 10, top + height / 2 - 4, textColor);
+
+                // Indicador de estado
                 String statusText = this.enabled ? "✓" : "✗";
                 int statusColor = this.enabled ? 0x55FF55 : 0xFF5555;
-                guiGraphics.drawString(ModConfigScreen.this.font, statusText, 
-                           left + width - 12, top + (height - 8) / 2, statusColor);
+                guiGraphics.drawString(ModConfigScreen.this.font, statusText,
+                           left + width - 15, top + height / 2 - 4, statusColor);
             }
 
             /**
@@ -539,5 +585,15 @@ public class ModConfigScreen extends Screen {
                     .collect(Collectors.joining(" "));
             }
         }
+    }
+
+    @Override
+    public void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        if (this.minecraft.level == null) {
+            this.renderPanorama(guiGraphics, partialTick);
+        }
+        
+        this.renderBlurredBackground(partialTick);
+        this.renderMenuBackground(guiGraphics);
     }
 }

@@ -94,7 +94,6 @@ public class CommonConfig {
         Set<ResourceLocation> fluidIds = FluidRegistryHelper.getAllFluidIds();
         
         if (fluidIds.size() <= 2) {
-            Constants.LOG.warn("Muy pocos fluidos detectados ({}). ¡El registro podría no estar completo!", fluidIds.size());
             // Añadir solo agua por ahora como mínimo
             this.allowedFluids.clear();
             this.allowedFluids.add(BuiltInRegistries.FLUID.getKey(Fluids.WATER));

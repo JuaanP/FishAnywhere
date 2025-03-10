@@ -84,10 +84,6 @@ public class FluidRegistryHelper {
             // Registrar fluidos individuales para diagnóstico
             VALID_FLUIDS.keySet().forEach(id -> 
                 Constants.LOG.debug("Registered valid fluid: {}", id));
-                
-            if (VALID_FLUIDS.size() <= 2) {
-                Constants.LOG.warn("Only {} fluids were found. BuiltInRegistries may not be fully initialized!", VALID_FLUIDS.size());
-            }
         } catch (Exception e) {
             Constants.LOG.error("Error initializing FluidRegistryHelper", e);
         }
