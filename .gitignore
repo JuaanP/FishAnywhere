@@ -64,3 +64,6 @@ local.properties
 /fabric/runs/server/
 /buildSrc/build/
 /.idea/
+/forge/build/classpath/
+/forge/build/createSrgToMcp/
+/forge/build/natives/

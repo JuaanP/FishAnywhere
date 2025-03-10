@@ -26,27 +26,8 @@ public class FishAnywhereForge {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     public FishAnywhereForge() {
-        try {
-            // Registrar eventos de Forge
-            MinecraftForge.EVENT_BUS.register(this);
-            
-            // Inicialización común
-            CommonClass.init();
-            
-            // Configurar Mixins - manejo de excepciones mejorado
-            try {
-                MixinBootstrap.init();
-                Mixins.addConfiguration(Constants.MOD_ID +".forge.mixins.json");
-                Constants.LOG.info("Mixins initialized successfully");
-            } catch (Exception e) {
-                Constants.LOG.error("Error initializing mixins, continuing without them", e);
-                // En entorno de desarrollo, podemos continuar sin mixins
-                // En producción, esto podría causar problemas
-            }
-        } catch (Exception e) {
-            Constants.LOG.error("Error during mod initialization", e);
-            // Manejar errores de inicialización de manera más robusta
-        }
+        MinecraftForge.EVENT_BUS.register(this);
+        CommonClass.init();
     }
     
     @SubscribeEvent
@@ -65,7 +46,7 @@ public class FishAnywhereForge {
     public static class ModEvents {
         @SubscribeEvent
         public static void onCommonSetup(FMLCommonSetupEvent event) {
-            LOGGER.info("FishAnywhere common setup...");
+            LOGGER.info(Constants.MOD_NAME +" common setup...");
             
             // Aquí los registros ya deberían estar completos
             event.enqueueWork(() -> {
@@ -90,7 +71,7 @@ public class FishAnywhereForge {
     public static class ClientModEvents {
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
-            LOGGER.info("FishAnywhere client setup...");
+            LOGGER.info(Constants.MOD_NAME +" client setup...");
 
             // Registrar pantalla de configuración
             ModLoadingContext.get().registerExtensionPoint(

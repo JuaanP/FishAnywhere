@@ -26,4 +26,4 @@ versionRange = "${minecraft_version}"
 ordering = "NONE"
 side = "BOTH"
 [[mixins]]
-config="fishanywhere.forge.mixins.json"
+config="fishanywhere.mixins.json"

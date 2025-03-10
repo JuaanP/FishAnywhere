@@ -1,13 +1,9 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.juaanp.${mod_id}.mixin",
+  "package": "com.juaanp.fishanywhere.mixin",
+  "refmap": "fishanywhere.refmap.json",
   "compatibilityLevel": "JAVA_17",
-  "refmap": "${mod_id}.refmap.json",
-  "mixins": [
-    "ForgeFishingHookMixin"
-  ],
-  "client": [],
   "injectors": {
     "defaultRequire": 1
   }
