@@ -37,8 +37,7 @@ public class FishAnywhereFabric implements ModInitializer {
     }
     
     private void scheduleConfigUpdate() {
-        // En Fabric, podemos usar ServerLifecycleEvents.SERVER_STARTING para asegurarnos de que
-        // todos los registros estén completos
+        // Este método sólo debe ejecutarse durante la inicialización del servidor
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             Constants.LOG.info("Verifying fluid registry completeness...");
             

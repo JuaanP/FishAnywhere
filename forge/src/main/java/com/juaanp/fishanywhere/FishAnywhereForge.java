@@ -96,7 +96,11 @@ public class FishAnywhereForge {
             ModLoadingContext.get().registerExtensionPoint(
                     ConfigScreenHandler.ConfigScreenFactory.class,
                     () -> new ConfigScreenHandler.ConfigScreenFactory(
-                            (minecraft, screen) -> new ModConfigScreen(screen)
+                            (minecraft, screen) -> {
+                                // Simplemente devolver la pantalla sin manipular fluidos
+                                Constants.LOG.debug("Opening config screen");
+                                return new ModConfigScreen(screen);
+                            }
                     )
             );
         }
