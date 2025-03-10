@@ -2,7 +2,7 @@ package com.juaanp.fishanywhere.config;
 
 import com.juaanp.fishanywhere.Constants;
 import com.juaanp.fishanywhere.util.FluidRegistryHelper;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -35,7 +35,7 @@ public class CommonConfig {
         this.forceOpenWater = Constants.DEFAULT_FORCE_OPEN_WATER;
         this.allowedFluids = new HashSet<>();
         // Siempre incluir agua como mínimo
-        this.allowedFluids.add(Registry.FLUID.getKey(Fluids.WATER));
+        this.allowedFluids.add(BuiltInRegistries.FLUID.getKey(Fluids.WATER));
     }
     
     /**
@@ -97,7 +97,7 @@ public class CommonConfig {
             Constants.LOG.warn("Muy pocos fluidos detectados ({}). ¡El registro podría no estar completo!", fluidIds.size());
             // Añadir solo agua por ahora como mínimo
             this.allowedFluids.clear();
-            this.allowedFluids.add(Registry.FLUID.getKey(Fluids.WATER));
+            this.allowedFluids.add(BuiltInRegistries.FLUID.getKey(Fluids.WATER));
             
             // Marcar como no cargado para forzar una recarga posterior
             defaultFluidsLoaded = false;
@@ -153,7 +153,7 @@ public class CommonConfig {
             return false;
         }
         
-        ResourceLocation fluidId = Registry.FLUID.getKey(fluid);
+        ResourceLocation fluidId = BuiltInRegistries.FLUID.getKey(fluid);
         return allowedFluids.contains(fluidId);
     }
     
@@ -202,7 +202,7 @@ public class CommonConfig {
             return;
         }
         
-        ResourceLocation fluidId = Registry.FLUID.getKey(fluid);
+        ResourceLocation fluidId = BuiltInRegistries.FLUID.getKey(fluid);
         setFluidEnabled(fluidId, enabled);
     }
     

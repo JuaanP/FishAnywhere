@@ -1,7 +1,7 @@
 package com.juaanp.fishanywhere.util;
 
 import com.juaanp.fishanywhere.Constants;
-import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -41,23 +41,23 @@ public class FluidRegistryHelper {
             int count = 0;
             // Imprimir todos los fluidos disponibles para diagnóstico
             Constants.LOG.debug("===== Scanning available fluids =====");
-            for (Fluid fluid : Registry.FLUID) {
-                ResourceLocation id = Registry.FLUID.getKey(fluid);
+            for (Fluid fluid : BuiltInRegistries.FLUID) {
+                ResourceLocation id = BuiltInRegistries.FLUID.getKey(fluid);
                 Constants.LOG.debug("Found fluid: {} ({})", id, fluid);
                 count++;
             }
-            Constants.LOG.debug("Total fluids found in registry: {}", count);
+            Constants.LOG.debug("Total fluids found in BuiltInRegistries: {}", count);
             
             // Recorrer todos los fluidos en el registro
-            Registry.FLUID.forEach(fluid -> {
+            BuiltInRegistries.FLUID.forEach(fluid -> {
                 // Excluir el fluido vacío y los fluidos "flowing"
                 if (fluid != Fluids.EMPTY && 
                     fluid != Fluids.FLOWING_WATER && 
                     fluid != Fluids.FLOWING_LAVA &&
-                    !Registry.FLUID.getKey(fluid).getPath().startsWith("flowing_")) {
+                    !BuiltInRegistries.FLUID.getKey(fluid).getPath().startsWith("flowing_")) {
                     
                     // Obtener el namespace (mod ID)
-                    ResourceLocation fluidId = Registry.FLUID.getKey(fluid);
+                    ResourceLocation fluidId = BuiltInRegistries.FLUID.getKey(fluid);
                     String modId = fluidId.getNamespace();
                     
                     // Casos especiales: agrupar fluidos específicos bajo "minecraft"
@@ -75,7 +75,7 @@ public class FluidRegistryHelper {
             
             // Ordenar las listas de fluidos por mod
             for (List<Fluid> fluidList : FLUIDS_BY_MOD.values()) {
-                fluidList.sort(Comparator.comparing(fluid -> Registry.FLUID.getKey(fluid).getPath()));
+                fluidList.sort(Comparator.comparing(fluid -> BuiltInRegistries.FLUID.getKey(fluid).getPath()));
             }
             
             Constants.LOG.info("FluidRegistryHelper initialized with {} valid fluids from {} mods", 
@@ -86,7 +86,7 @@ public class FluidRegistryHelper {
                 Constants.LOG.debug("Registered valid fluid: {}", id));
                 
             if (VALID_FLUIDS.size() <= 2) {
-                Constants.LOG.warn("Only {} fluids were found. Registry may not be fully initialized!", VALID_FLUIDS.size());
+                Constants.LOG.warn("Only {} fluids were found. BuiltInRegistries may not be fully initialized!", VALID_FLUIDS.size());
             }
         } catch (Exception e) {
             Constants.LOG.error("Error initializing FluidRegistryHelper", e);
@@ -137,7 +137,7 @@ public class FluidRegistryHelper {
             return false;
         }
         
-        ResourceLocation id = Registry.FLUID.getKey(fluid);
+        ResourceLocation id = BuiltInRegistries.FLUID.getKey(fluid);
         return VALID_FLUIDS.containsKey(id);
     }
     
