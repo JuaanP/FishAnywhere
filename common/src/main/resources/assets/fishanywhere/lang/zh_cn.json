@@ -1,0 +1,11 @@
+{
+  "fishanywhere.config.title": "随处钓鱼配置",
+  "fishanywhere.config.fluidsTitle": "允许的流体",
+  "fishanywhere.config.forceOpenWater": "强制开放水域",
+
+  "fishanywhere.config.enable": "启用",
+  "fishanywhere.config.reset": "重置",
+  "fishanywhere.config.default": "默认",
+
+  "fishanywhere.config.forceOpenWater.tooltip": "启用后，您将获得如同在开放水域钓鱼的战利品"
+}

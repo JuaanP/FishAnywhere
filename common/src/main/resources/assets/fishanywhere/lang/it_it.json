@@ -1,0 +1,10 @@
+{
+  "fishanywhere.config.title": "Configurazione di FishAnywhere",
+  "fishanywhere.config.fluidsTitle": "Fluidi Consentiti",
+  "fishanywhere.config.forceOpenWater": "Forza Acqua Aperta",
+  "fishanywhere.config.forceOpenWater.tooltip": "Quando attivato, otterrai sempre bottino come se stessi pescando in acque aperte",
+
+  "fishanywhere.config.enable": "Attiva",
+  "fishanywhere.config.reset": "Reimposta",
+  "fishanywhere.config.default": "Predefinito"
+} 

@@ -1,0 +1,10 @@
+{
+  "fishanywhere.config.title": "FishAnywhere Configuratie",
+  "fishanywhere.config.fluidsTitle": "Toegestane Vloeistoffen",
+  "fishanywhere.config.forceOpenWater": "Open Water Forceren",
+  "fishanywhere.config.forceOpenWater.tooltip": "Wanneer ingeschakeld, krijg je altijd buit alsof je in open water vist",
+
+  "fishanywhere.config.enable": "Inschakelen",
+  "fishanywhere.config.reset": "Resetten",
+  "fishanywhere.config.default": "Standaard"
+} 

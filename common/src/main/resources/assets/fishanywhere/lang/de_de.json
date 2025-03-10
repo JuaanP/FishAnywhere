@@ -1,0 +1,10 @@
+{
+  "fishanywhere.config.title": "FishAnywhere Konfiguration",
+  "fishanywhere.config.fluidsTitle": "Erlaubte Flüssigkeiten",
+  "fishanywhere.config.forceOpenWater": "Offenes Wasser Erzwingen",
+  "fishanywhere.config.forceOpenWater.tooltip": "Wenn aktiviert, erhalten Sie immer Beute wie beim Angeln in offenem Gewässer",
+
+  "fishanywhere.config.enable": "Aktivieren",
+  "fishanywhere.config.reset": "Zurücksetzen",
+  "fishanywhere.config.default": "Standard"
+} 
