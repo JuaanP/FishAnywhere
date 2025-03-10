@@ -1,10 +1,10 @@
 package com.juaanp.fishanywhere;
 
 import com.juaanp.fishanywhere.config.ConfigHelper;
+import com.juaanp.fishanywhere.config.CommonConfig;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import com.juaanp.fishanywhere.util.FluidRegistryHelper;
-import com.juaanp.fishanywhere.config.CommonConfig;
 
 public class FishAnywhereFabric implements ModInitializer {
     @Override

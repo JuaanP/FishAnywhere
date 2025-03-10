@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.juaanp.fishanywhere.Constants;
 import com.juaanp.fishanywhere.config.CommonConfig;
 import com.juaanp.fishanywhere.config.ConfigData;
+import com.juaanp.fishanywhere.util.FluidRegistryHelper;
 import net.fabricmc.loader.api.FabricLoader;
 
 import java.io.*;
