@@ -67,3 +67,10 @@ local.properties
 /forge/build/classpath/
 /forge/build/createSrgToMcp/
 /forge/build/natives/
+/neoforge/build/classes/
+/neoforge/build/jars/
+/neoforge/build/generated/
+/neoforge/build/neoForge/
+/neoforge/build/neoForm/
+/neoforge/build/resources/
+/neoforge/build/tmp/

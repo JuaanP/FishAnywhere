@@ -1,0 +1,7 @@
+{
+  "version": 1,
+  "forceOpenWater": true,
+  "allowedFluids": [
+    "minecraft:water"
+  ]
+}

@@ -59,8 +59,8 @@ plugins {
 rootProject.name = 'FishAnywhere'
 include("common")
 include("fabric")
-include("forge")
-//include("neoforge")
+//include("forge")
+include("neoforge")
 
 // Establecer las propiedades del proyecto para todos los módulos
 gradle.beforeProject { project ->

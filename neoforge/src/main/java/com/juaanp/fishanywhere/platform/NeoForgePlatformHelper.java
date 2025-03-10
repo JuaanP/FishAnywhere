@@ -6,28 +6,22 @@ import com.juaanp.fishanywhere.Constants;
 import com.juaanp.fishanywhere.config.CommonConfig;
 import com.juaanp.fishanywhere.config.ConfigData;
 import com.juaanp.fishanywhere.util.FluidRegistryHelper;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.loading.FMLLoader;
-import net.minecraftforge.fml.loading.FMLPaths;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.fml.loading.FMLPaths;
 
-import java.io.IOException;
-import java.io.Reader;
-import java.io.Writer;
+import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
-import java.util.HashSet;
-import java.util.Set;
 
-public class ForgePlatformHelper implements IPlatformHelper {
-    // Para manejo de JSON para configuración
+public class NeoForgePlatformHelper implements IPlatformHelper {
     private static final Gson GSON = new GsonBuilder()
             .setPrettyPrinting()
             .disableHtmlEscaping()
             .create();
     
-    // Archivo de configuración en formato JSON
+    // Archivo de configuración principal
     private static final Path CONFIG_DIR = FMLPaths.CONFIGDIR.get();
     private static final Path CONFIG_FILE = CONFIG_DIR.resolve(Constants.MOD_ID + ".json");
     
@@ -36,7 +30,7 @@ public class ForgePlatformHelper implements IPlatformHelper {
 
     @Override
     public String getPlatformName() {
-        return "Forge";
+        return "NeoForge";
     }
 
     @Override
@@ -64,21 +58,16 @@ public class ForgePlatformHelper implements IPlatformHelper {
                         
                         // Marcar la configuración como limpia ya que acabamos de cargarla
                         CommonConfig.getInstance().markClean();
-                        
-                        // Verificar que la configuración tenga suficientes fluidos
-                        if (CommonConfig.getInstance().getAllowedFluids().size() <= 2) {
-                            Constants.LOG.warn("Configuración cargada pero con pocos fluidos. Se actualizará cuando los registros estén completos.");
-                        }
                     }
                 }
             } else {
-                Constants.LOG.info("Config file not found, initializing with default values");
+                Constants.LOG.info("Config file not found, creating default configuration with all fluids");
                 
                 // Asegurarnos de que la configuración se inicializa con valores por defecto
                 CommonConfig.getInstance().resetToDefaults();
                 
-                // Asegurarnos de cargar los fluidos disponibles hasta ahora
-                FluidRegistryHelper.forceInitialize();
+                // Forzar la carga de todos los fluidos, independientemente del estado
+                FluidRegistryHelper.initialize();
                 CommonConfig.getInstance().forceLoadAllFluids();
                 
                 saveConfig();
@@ -95,7 +84,7 @@ public class ForgePlatformHelper implements IPlatformHelper {
             // Asegurarse de que el directorio existe
             Files.createDirectories(CONFIG_FILE.getParent());
             
-            // Crear un archivo temporal primero
+            // Crear un archivo temporal primero para evitar corrupción si hay un cierre inesperado
             Path tempFile = CONFIG_FILE.resolveSibling(CONFIG_FILE.getFileName() + ".tmp");
             
             // Serializar la configuración
