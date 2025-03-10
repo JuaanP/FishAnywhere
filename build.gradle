@@ -86,7 +86,7 @@ subprojects {
                     
                     // Archivos a subir
                     mainArtifact(tasks.jar) {
-                        displayName = "${project.version} (${project.name.capitalize()}) for MC ${minecraft_version}"
+                        // displayName = "${project.version} (${project.name.capitalize()}) for MC ${minecraft_version}"
                     }
                     
                     // Versiones de Minecraft compatibles
