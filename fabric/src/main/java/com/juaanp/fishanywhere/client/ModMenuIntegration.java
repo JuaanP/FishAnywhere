@@ -13,17 +13,8 @@ public class ModMenuIntegration implements ModMenuApi {
     @Override
     public ConfigScreenFactory<?> getModConfigScreenFactory() {
         return parent -> {
-            // Asegurarnos de que el registro de fluidos esté inicializado antes de abrir la pantalla
-            Constants.LOG.debug("Opening config screen - ensuring fluid registry is up to date");
-            FluidRegistryHelper.forceInitialize();
-            
-            // Si hay muy pocos fluidos registrados, intentar cargarlos todos
-            if (CommonConfig.getInstance().getAllowedFluids().size() <= 2) {
-                Constants.LOG.info("Loading all available fluids into configuration");
-                CommonConfig.getInstance().forceLoadAllFluids();
-            }
-            
-            // Devolver la pantalla de configuración
+            // Simplemente crear la pantalla de configuración sin manipular fluidos
+            Constants.LOG.debug("Opening config screen");
             return new ModConfigScreen(parent);
         };
     }

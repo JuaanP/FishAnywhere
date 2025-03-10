@@ -28,6 +28,9 @@ public class FishAnywhereForge {
     public FishAnywhereForge() {
         MinecraftForge.EVENT_BUS.register(this);
         CommonClass.init();
+        
+        // Inicializar el registro de fluidos para diagnóstico temprano
+        FluidRegistryHelper.initialize();
     }
     
     @SubscribeEvent
@@ -55,9 +58,10 @@ public class FishAnywhereForge {
                 // Forzar la reinicialización del registro de fluidos
                 FluidRegistryHelper.forceInitialize();
                 
-                // Verificar si necesitamos actualizar la configuración
-                if (CommonConfig.getInstance().getAllowedFluids().size() <= 2) {
-                    Constants.LOG.info("Updating configuration with complete fluid registry...");
+                // Verificar si la configuración está vacía o casi vacía
+                if (CommonConfig.getInstance().getAllowedFluids().isEmpty() || 
+                    CommonConfig.getInstance().getAllowedFluids().size() <= 1) {
+                    Constants.LOG.info("New or empty configuration detected, updating with fluid registry...");
                     CommonConfig.getInstance().forceLoadAllFluids();
                     
                     // Guardar la configuración actualizada
@@ -73,11 +77,15 @@ public class FishAnywhereForge {
         public static void onClientSetup(FMLClientSetupEvent event) {
             LOGGER.info(Constants.MOD_NAME +" client setup...");
 
-            // Registrar pantalla de configuración
+            // Registrar pantalla de configuración sin manipular fluidos
             ModLoadingContext.get().registerExtensionPoint(
                     ConfigScreenHandler.ConfigScreenFactory.class,
                     () -> new ConfigScreenHandler.ConfigScreenFactory(
-                            (minecraft, screen) -> new ModConfigScreen(screen)
+                            (minecraft, screen) -> {
+                                // Simplemente devolver la pantalla sin manipular fluidos
+                                Constants.LOG.debug("Opening config screen");
+                                return new ModConfigScreen(screen);
+                            }
                     )
             );
         }

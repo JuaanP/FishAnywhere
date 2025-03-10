@@ -24,13 +24,13 @@ public class ConfigHelper {
             Constants.LOG.info("Initializing FishAnywhere config...");
             
             try {
+                // Cargar configuración del archivo pero no forzar actualización de fluidos
                 Services.PLATFORM.loadConfig();
                 Constants.LOG.info("Configuration loaded successfully");
             } catch (Exception e) {
                 Constants.LOG.error("Failed to load configuration, using defaults", e);
                 CommonConfig.getInstance().resetToDefaults();
                 
-                // Intentar crear un nuevo archivo de configuración
                 try {
                     Constants.LOG.info("Creating new config file with defaults...");
                     Services.PLATFORM.saveConfig();
@@ -39,7 +39,6 @@ public class ConfigHelper {
                 }
             }
             
-            // Iniciar auto-guardado si está habilitado
             if (AUTO_SAVE_ENABLED.get()) {
                 startAutoSave();
             }

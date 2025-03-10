@@ -78,15 +78,12 @@ public class FluidRegistryHelper {
                 fluidList.sort(Comparator.comparing(fluid -> BuiltInRegistries.FLUID.getKey(fluid).getPath()));
             }
             
-            Constants.LOG.info("FluidRegistryHelper initialized with {} valid fluids from {} mods", 
-                    VALID_FLUIDS.size(), FLUIDS_BY_MOD.size());
-                
-            // Registrar fluidos individuales para diagnóstico
-            VALID_FLUIDS.keySet().forEach(id -> 
-                Constants.LOG.debug("Registered valid fluid: {}", id));
-                
+            Constants.LOG.info("FluidRegistryHelper initialized with {} valid fluids", VALID_FLUIDS.size());
+            
+            // Advertir si hay pocos fluidos encontrados
             if (VALID_FLUIDS.size() <= 2) {
-                Constants.LOG.warn("Only {} fluids were found. BuiltInRegistries may not be fully initialized!", VALID_FLUIDS.size());
+                Constants.LOG.warn("Only {} fluids were found. BuiltInRegistries may not be fully initialized!", 
+                      VALID_FLUIDS.size());
             }
         } catch (Exception e) {
             Constants.LOG.error("Error initializing FluidRegistryHelper", e);

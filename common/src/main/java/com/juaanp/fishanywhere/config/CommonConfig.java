@@ -44,10 +44,15 @@ public class CommonConfig {
     public void resetToDefaults() {
         this.forceOpenWater = Constants.DEFAULT_FORCE_OPEN_WATER;
         
-        this.allowedFluids = new HashSet<>();
+        // Usar los fluidos ya registrados sin forzar reinicialización
+        Set<ResourceLocation> fluidIds = FluidRegistryHelper.getAllFluidIds();
+        this.allowedFluids = new HashSet<>(fluidIds);
         
-        // Cargar todos los fluidos disponibles
-        loadAllFluids();
+        // Asegurar que agua siempre está incluida
+        ResourceLocation waterFluidId = BuiltInRegistries.FLUID.getKey(Fluids.WATER);
+        if (!this.allowedFluids.contains(waterFluidId)) {
+            this.allowedFluids.add(waterFluidId);
+        }
         
         this.dirty = true;
     }
@@ -242,5 +247,12 @@ public class CommonConfig {
      */
     public void markClean() {
         this.dirty = false;
+    }
+
+    /**
+     * Marca la configuración como modificada explícitamente
+     */
+    public void markDirty() {
+        this.dirty = true;
     }
 }

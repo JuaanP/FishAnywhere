@@ -37,20 +37,18 @@ public class FishAnywhereFabric implements ModInitializer {
     }
     
     private void scheduleConfigUpdate() {
-        // En Fabric, podemos usar ServerLifecycleEvents.SERVER_STARTING para asegurarnos de que
-        // todos los registros estén completos
+        // Este método sólo debe ejecutarse durante la inicialización del servidor, no al abrir la configuración
         ServerLifecycleEvents.SERVER_STARTING.register(server -> {
             Constants.LOG.info("Verifying fluid registry completeness...");
             
-            // Forzar la reinicialización del registro de fluidos
+            // Actualizar el registro de fluidos pero no forzarlo en la configuración
             FluidRegistryHelper.forceInitialize();
             
-            // Verificar si necesitamos actualizar la configuración
-            if (CommonConfig.getInstance().getAllowedFluids().size() <= 2) {
-                Constants.LOG.info("Updating configuration with complete fluid registry...");
+            // Sólo si la configuración es nueva o está vacía, cargar los fluidos
+            if (CommonConfig.getInstance().getAllowedFluids().isEmpty() || 
+                CommonConfig.getInstance().getAllowedFluids().size() <= 1) {
+                Constants.LOG.info("New configuration detected, updating with fluid registry...");
                 CommonConfig.getInstance().forceLoadAllFluids();
-                
-                // Guardar la configuración actualizada
                 ConfigHelper.save();
             }
         });

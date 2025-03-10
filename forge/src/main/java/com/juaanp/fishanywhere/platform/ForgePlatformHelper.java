@@ -65,22 +65,19 @@ public class ForgePlatformHelper implements IPlatformHelper {
                         // Marcar la configuración como limpia ya que acabamos de cargarla
                         CommonConfig.getInstance().markClean();
                         
-                        // Verificar que la configuración tenga suficientes fluidos
+                        // No modificar los fluidos aquí, solo informar si hay pocos
                         if (CommonConfig.getInstance().getAllowedFluids().size() <= 2) {
-                            Constants.LOG.warn("Configuración cargada pero con pocos fluidos. Se actualizará cuando los registros estén completos.");
+                            Constants.LOG.warn("Configuration loaded but with few fluids. Will be updated when game registries are complete.");
                         }
                     }
                 }
             } else {
                 Constants.LOG.info("Config file not found, initializing with default values");
                 
-                // Asegurarnos de que la configuración se inicializa con valores por defecto
+                // Usar resetToDefaults en lugar de manipular fluidos directamente
                 CommonConfig.getInstance().resetToDefaults();
                 
-                // Asegurarnos de cargar los fluidos disponibles hasta ahora
-                FluidRegistryHelper.forceInitialize();
-                CommonConfig.getInstance().forceLoadAllFluids();
-                
+                // No forzar la carga de fluidos aquí, se hará en el momento apropiado durante la inicialización del servidor
                 saveConfig();
             }
         } catch (Exception e) {
