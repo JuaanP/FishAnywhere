@@ -8,6 +8,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.AbstractSelectionList;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.ObjectSelectionList;
@@ -210,15 +211,12 @@ public class ModConfigScreen extends Screen {
         // Nueva clase base abstracta para entradas de la lista
         abstract class AbstractFluidEntry extends ObjectSelectionList.Entry<AbstractFluidEntry> {}
         
-        // Almacenar la altura del elemento a nivel de la clase
-        private final int entryHeight = FLUIDS_LIST_ITEM_HEIGHT;
-        
         public FluidSelectionList(Minecraft minecraft, int height) {
             super(minecraft,
                   ModConfigScreen.this.width,
                   height,
                   FLUIDS_SECTION_TOP + 20,
-                  ModConfigScreen.this.height - BOTTOM_BUTTON_SECTION_HEIGHT);
+                  ModConfigScreen.this.height - BOTTOM_BUTTON_SECTION_HEIGHT - 5);
             
             // Obtener fluidos agrupados por mod desde el helper
             Map<String, List<Fluid>> fluidsByMod = FluidRegistryHelper.getFluidsByMod();
@@ -248,11 +246,18 @@ public class ModConfigScreen extends Screen {
         public int getRowWidth() {
             return width - 40; // Margen de 20px a cada lado
         }
+        
+        @Override
+        protected void renderItem(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick, 
+                                int index, int left, int top, int width, int height) {
+            // Reducir el espacio vertical efectivo para cada elemento
+            super.renderItem(guiGraphics, mouseX, mouseY, partialTick, index, left, top, width, height - 2);
+        }
 
         @Override
         public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-            // Guardar el límite inferior exacto
-            int bottomLimit = ModConfigScreen.this.height - BOTTOM_BUTTON_SECTION_HEIGHT;
+            // Calcular el límite inferior exacto
+            int bottomLimit = ModConfigScreen.this.height - BOTTOM_BUTTON_SECTION_HEIGHT + 5;
             
             // Dibujar con recorte (scissor)
             var rect = this.getRectangle();
@@ -299,14 +304,18 @@ public class ModConfigScreen extends Screen {
             @Override
             public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, 
                              int mouseX, int mouseY, boolean isHovered, float partialTick) {
-                // Dibujar un fondo para el encabezado del mod
-                guiGraphics.fill(left, top, left + width, top + height, 0x44000000);
+                // Hacer el encabezado más compacto
+                top += 1;
+                height -= 2;
                 
-                // Dibujar el nombre del mod centrado y en negrita
+                // Ajustar el encabezado para que sea más compacto
+                guiGraphics.fill(left, top, left + width, top + height, 0x66000000);
+                
+                // Dibujar el nombre del mod centrado y en negrita - ajustar posición vertical
                 Font font = ModConfigScreen.this.font;
                 int textWidth = font.width(this.modName);
                 guiGraphics.drawString(font, this.modName, 
-                          left + width / 2 - textWidth / 2, top + 5, 0xFFFF55);
+                          left + width / 2 - textWidth / 2, top + (height - 8) / 2, 0xFFFF55);
                 
                 // Dibujar líneas decorativas a los lados del nombre
                 int lineY = top + height / 2;
@@ -343,7 +352,7 @@ public class ModConfigScreen extends Screen {
             private boolean enabled;
             private final Component displayName;
             private final TextureAtlasSprite fluidSprite;
-            private final int iconSize = 16;
+            private final int iconSize = 12; // Reducido de 16 a 12
             private long lastClickTime;
 
             public FluidEntry(Fluid fluid, ResourceLocation fluidId, boolean enabled) {
@@ -441,6 +450,10 @@ public class ModConfigScreen extends Screen {
 
             @Override
             public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isHovered, float partialTick) {
+                // Para hacer los elementos más compactos, ajustamos visualmente
+                top += 1;
+                height -= 2;
+                
                 int textColor = 0xFFFFFF;
                 if (isHovered) {
                     // Dibujar un fondo resaltado cuando el ratón está encima
@@ -475,15 +488,15 @@ public class ModConfigScreen extends Screen {
                     RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
                 }
                 
-                // Renderizar el nombre del fluido a la derecha del icono
+                // Renderizar el nombre del fluido a la derecha del icono - ajustar posición vertical
                 guiGraphics.drawString(ModConfigScreen.this.font, this.displayName, 
-                           left + iconSize + 10, top + height / 2 - 4, textColor);
+                           left + iconSize + 8, top + (height - 8) / 2, textColor);
                 
-                // Indicador de estado
+                // Indicador de estado - ajustar posición vertical
                 String statusText = this.enabled ? "✓" : "✗";
                 int statusColor = this.enabled ? 0x55FF55 : 0xFF5555;
                 guiGraphics.drawString(ModConfigScreen.this.font, statusText, 
-                           left + width - 15, top + height / 2 - 4, statusColor);
+                           left + width - 12, top + (height - 8) / 2, statusColor);
             }
 
             /**
