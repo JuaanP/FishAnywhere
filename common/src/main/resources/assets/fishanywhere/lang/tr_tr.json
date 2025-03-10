@@ -1,0 +1,10 @@
+{
+  "fishanywhere.config.title": "FishAnywhere Yapılandırması",
+  "fishanywhere.config.fluidsTitle": "İzin Verilen Sıvılar",
+  "fishanywhere.config.forceOpenWater": "Açık Su Zorla",
+  "fishanywhere.config.forceOpenWater.tooltip": "Etkinleştirildiğinde, her zaman açık suda balık tutuyormuş gibi ganimet elde edersiniz",
+
+  "fishanywhere.config.enable": "Etkinleştir",
+  "fishanywhere.config.reset": "Sıfırla",
+  "fishanywhere.config.default": "Varsayılan"
+} 

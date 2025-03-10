@@ -1,20 +1,10 @@
 {
-  "fishanywhere.config.section.no.villager.trading.common.toml.title": "FishAnywhere設定",
   "fishanywhere.config.title": "FishAnywhere設定",
+  "fishanywhere.config.fluidsTitle": "許可された液体",
+  "fishanywhere.config.forceOpenWater": "オープンウォーターを強制",
+  "fishanywhere.config.forceOpenWater.tooltip": "有効にすると、オープンウォーターで釣りをしているかのように常に戦利品を獲得できます",
 
-  "fishanywhere.config.category.bottles": "エンチャントの瓶の設定",
-  "fishanywhere.config.category.orbs": "経験値オーブの設定",
-
-  "fishanywhere.config.requireCtrl": "しゃがみが必要",
-  "fishanywhere.config.xpMultiplier": "XP倍率",
-  "fishanywhere.config.orbAttractRange": "引き寄せ範囲",
-  "fishanywhere.config.orbPickupRange": "拾得範囲",
-
-  "fishanywhere.config.enable": "有効化",
+  "fishanywhere.config.enable": "有効",
   "fishanywhere.config.reset": "リセット",
-  "fishanywhere.config.default": "デフォルト",
-
-  "fishanywhere.config.levelsPerBottle": "ボトルごとのレベル",
-  "fishanywhere.config.auto": "自動",
-  "fishanywhere.config.max": "最大"
-}
+  "fishanywhere.config.default": "デフォルト"
+} 
