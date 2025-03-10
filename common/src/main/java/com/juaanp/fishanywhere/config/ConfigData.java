@@ -29,7 +29,7 @@ public class ConfigData {
         Set<ResourceLocation> fluidIds = new HashSet<>();
         for (String fluidId : allowedFluids) {
             try {
-                fluidIds.add(new ResourceLocation(fluidId));
+                fluidIds.add(ResourceLocation.parse(fluidId));
             } catch (Exception e) {
                 // Ignorar IDs inválidos
             }

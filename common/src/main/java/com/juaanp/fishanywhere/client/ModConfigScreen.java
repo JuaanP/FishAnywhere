@@ -11,10 +11,10 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.ObjectSelectionList;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -27,12 +27,9 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
 
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 public class ModConfigScreen extends Screen {
@@ -118,7 +115,7 @@ public class ModConfigScreen extends Screen {
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         // Fondo
-        this.renderBackground(guiGraphics);
+        this.renderBackground(guiGraphics, mouseX, mouseY, partialTick);
         
         // --- SECCIÓN 1: TÍTULO ---
         guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 5, 0xFFFFFF);
@@ -134,11 +131,6 @@ public class ModConfigScreen extends Screen {
         // Renderizar widgets y finalizar
         super.render(guiGraphics, mouseX, mouseY, partialTick);
         setResetButtonState(isAnyNonDefault());
-    }
-
-    @Override
-    public void renderBackground(GuiGraphics guiGraphics) {
-        this.renderDirtBackground(guiGraphics);
     }
 
     protected void setResetButtonState(boolean state) {
@@ -218,16 +210,15 @@ public class ModConfigScreen extends Screen {
         // Nueva clase base abstracta para entradas de la lista
         abstract class AbstractFluidEntry extends ObjectSelectionList.Entry<AbstractFluidEntry> {}
         
+        // Almacenar la altura del elemento a nivel de la clase
+        private final int entryHeight = FLUIDS_LIST_ITEM_HEIGHT;
+        
         public FluidSelectionList(Minecraft minecraft, int height) {
             super(minecraft,
                   ModConfigScreen.this.width,
                   height,
                   FLUIDS_SECTION_TOP + 20,
-                  ModConfigScreen.this.height - BOTTOM_BUTTON_SECTION_HEIGHT,
-                  FLUIDS_LIST_ITEM_HEIGHT);
-            
-            this.setRenderBackground(false);
-            this.setRenderTopAndBottom(false);
+                  ModConfigScreen.this.height - BOTTOM_BUTTON_SECTION_HEIGHT);
             
             // Obtener fluidos agrupados por mod desde el helper
             Map<String, List<Fluid>> fluidsByMod = FluidRegistryHelper.getFluidsByMod();
@@ -259,8 +250,32 @@ public class ModConfigScreen extends Screen {
         }
 
         @Override
-        protected int getScrollbarPosition() {
-            return width - 10; // Posición de la barra de desplazamiento
+        public void renderWidget(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+            // Guardar el límite inferior exacto
+            int bottomLimit = ModConfigScreen.this.height - BOTTOM_BUTTON_SECTION_HEIGHT;
+            
+            // Dibujar con recorte (scissor)
+            var rect = this.getRectangle();
+            guiGraphics.pose().pushPose();
+            guiGraphics.enableScissor(
+                rect.left(),
+                rect.top(),
+                rect.width(),
+                bottomLimit - rect.top()
+            );
+            
+            super.renderWidget(guiGraphics, mouseX, mouseY, partialTick);
+            
+            guiGraphics.disableScissor();
+            guiGraphics.pose().popPose();
+            
+            // Dibujar separador
+            guiGraphics.fill(0, bottomLimit - 1, ModConfigScreen.this.width, bottomLimit, 0x66FFFFFF);
+        }
+
+        @Override
+        public void updateWidgetNarration(NarrationElementOutput output) {
+            super.updateWidgetNarration(output);
         }
 
         // Clase para encabezados de mod - ahora extiende AbstractFluidEntry
@@ -342,10 +357,10 @@ public class ModConfigScreen extends Screen {
                 
                 // Fluidos vanilla - sabemos exactamente dónde están sus texturas
                 if (fluid == Fluids.WATER) {
-                    sprite = minecraft.getTextureAtlas(BLOCK_ATLAS).apply(new ResourceLocation("minecraft", "block/water_still"));
+                    sprite = minecraft.getTextureAtlas(BLOCK_ATLAS).apply(ResourceLocation.withDefaultNamespace("block/water_still"));
                 } 
                 else if (fluid == Fluids.LAVA) {
-                    sprite = minecraft.getTextureAtlas(BLOCK_ATLAS).apply(new ResourceLocation("minecraft", "block/lava_still"));
+                    sprite = minecraft.getTextureAtlas(BLOCK_ATLAS).apply(ResourceLocation.withDefaultNamespace("block/lava_still"));
                 }
                 else {
                     // Para fluidos modded - intentar múltiples convenciones de naming conocidas
@@ -368,7 +383,7 @@ public class ModConfigScreen extends Screen {
                     
                     // Intentar cada patrón posible hasta encontrar uno que funcione
                     for (String path : possiblePaths) {
-                        ResourceLocation textureLocation = new ResourceLocation(modId, path);
+                        ResourceLocation textureLocation = ResourceLocation.fromNamespaceAndPath(modId, path);
                         TextureAtlasSprite testSprite = minecraft.getTextureAtlas(BLOCK_ATLAS).apply(textureLocation);
                         
                         // Verificar si el sprite es válido (no es el sprite por defecto)
@@ -398,7 +413,6 @@ public class ModConfigScreen extends Screen {
                     );
                     
                     this.toggleEnabled();
-                    this.lastClickTime = Util.getMillis();
                     return true;
                 }
                 return super.mouseClicked(mouseX, mouseY, button);
@@ -511,89 +525,6 @@ public class ModConfigScreen extends Screen {
                     .map(word -> word.isEmpty() ? "" : word.substring(0, 1).toUpperCase() + word.substring(1).toLowerCase())
                     .collect(Collectors.joining(" "));
             }
-        }
-
-        @Override
-        public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-            // Calcular el límite inferior exacto
-            int bottomLimit = ModConfigScreen.this.height - BOTTOM_BUTTON_SECTION_HEIGHT;
-            
-            // Guardar los límites originales
-            int originalBottom = this.y1;
-            
-            // Ajustar el límite inferior para el cálculo correcto de scroll
-            this.y1 = Math.min(this.y1, bottomLimit);
-            
-            // Configurar un scissor test para recortar cualquier renderizado fuera de los límites
-            int scissorLeft = 0;
-            int scissorTop = this.y0;
-            int scissorRight = ModConfigScreen.this.width;
-            int scissorBottom = bottomLimit;
-            
-            // Ajustar coordenadas para escala del GUI
-            double scale = ModConfigScreen.this.minecraft.getWindow().getGuiScale();
-            int guiScaledWidth = ModConfigScreen.this.minecraft.getWindow().getGuiScaledWidth();
-            int guiScaledHeight = ModConfigScreen.this.minecraft.getWindow().getGuiScaledHeight();
-            
-            // Convertir coordenadas GUI a coordenadas de ventana
-            int windowScissorLeft = (int)(scissorLeft * scale);
-            int windowScissorBottom = (int)(guiScaledHeight * scale) - (int)(scissorBottom * scale);
-            int windowScissorRight = (int)(scissorRight * scale);
-            int windowScissorTop = (int)(guiScaledHeight * scale) - (int)(scissorTop * scale);
-            
-            // Habilitar scissor test
-            RenderSystem.enableScissor(
-                windowScissorLeft,
-                windowScissorBottom,
-                windowScissorRight - windowScissorLeft,
-                windowScissorTop - windowScissorBottom
-            );
-            
-            // Renderizar la lista con el recorte aplicado
-            super.render(guiGraphics, mouseX, mouseY, partialTick);
-            
-            // Desactivar scissor test
-            RenderSystem.disableScissor();
-            
-            // Restaurar el límite original
-            this.y1 = originalBottom;
-            
-            // Dibujar un separador en la parte inferior (fuera del scissor test)
-            guiGraphics.fill(0, bottomLimit - 1, 
-                 ModConfigScreen.this.width, bottomLimit, 
-                 0x66FFFFFF);
-        }
-
-        @Override
-        public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-            AbstractFluidEntry selected = this.getSelected();
-            
-            // Si tenemos un elemento seleccionado y es un FluidEntry, delegamos el evento de teclado
-            if (selected instanceof FluidEntry) {
-                FluidEntry fluidEntry = (FluidEntry) selected;
-                
-                // Manejar Enter, Space y Numpad Enter
-                if (keyCode == 257 || keyCode == 32 || keyCode == 335) {
-                    // Reproducir sonido
-                    minecraft.getSoundManager().play(
-                        SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F)
-                    );
-                    
-                    // Alternar el estado
-                    fluidEntry.toggleEnabled();
-                    return true;
-                }
-            }
-            
-            // Para otras teclas, usar el comportamiento por defecto
-            return super.keyPressed(keyCode, scanCode, modifiers);
-        }
-
-        @Override
-        public boolean mouseClicked(double mouseX, double mouseY, int button) {
-            ModConfigScreen.this.setFocused(this);
-
-            return super.mouseClicked(mouseX, mouseY, button);
         }
     }
 }
