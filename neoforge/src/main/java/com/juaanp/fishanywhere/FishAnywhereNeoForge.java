@@ -95,6 +95,7 @@ public class FishAnywhereNeoForge {
                     () -> new IConfigScreenFactory() {
                         @Override
                         public Screen createScreen(ModContainer modContainer, Screen parentScreen) {
+                            // Simplemente devolver la pantalla sin manipular fluidos
                             return new ModConfigScreen(parentScreen);
                         }
                     }

@@ -44,10 +44,15 @@ public class CommonConfig {
     public void resetToDefaults() {
         this.forceOpenWater = Constants.DEFAULT_FORCE_OPEN_WATER;
         
-        this.allowedFluids = new HashSet<>();
+        // Cargar los fluidos actuales del registro sin forzar reinicialización
+        Set<ResourceLocation> fluidIds = FluidRegistryHelper.getAllFluidIds();
+        this.allowedFluids = new HashSet<>(fluidIds);
         
-        // Cargar todos los fluidos disponibles
-        loadAllFluids();
+        // Asegurar que agua siempre está incluida
+        ResourceLocation waterFluidId = BuiltInRegistries.FLUID.getKey(Fluids.WATER);
+        if (!this.allowedFluids.contains(waterFluidId)) {
+            this.allowedFluids.add(waterFluidId);
+        }
         
         this.dirty = true;
     }
@@ -90,23 +95,12 @@ public class CommonConfig {
         // Forzar reinicialización del registro de fluidos
         FluidRegistryHelper.forceInitialize();
         
-        // Verificar si tenemos suficientes fluidos registrados
+        // Obtener todos los fluidos disponibles
         Set<ResourceLocation> fluidIds = FluidRegistryHelper.getAllFluidIds();
-        
-        if (fluidIds.size() <= 2) {
-            // Añadir solo agua por ahora como mínimo
-            this.allowedFluids.clear();
-            this.allowedFluids.add(BuiltInRegistries.FLUID.getKey(Fluids.WATER));
-            
-            // Marcar como no cargado para forzar una recarga posterior
-            defaultFluidsLoaded = false;
-        } else {
-            // Tenemos suficientes fluidos, proceder normalmente
-            this.allowedFluids.clear();
-            this.allowedFluids.addAll(fluidIds);
-            Constants.LOG.info("Forced loading of {} fluid(s) into allowed fluids list", fluidIds.size());
-            defaultFluidsLoaded = true;
-        }
+
+        this.allowedFluids.clear();
+        this.allowedFluids.addAll(fluidIds);
+        defaultFluidsLoaded = true;
         
         this.dirty = true;
     }
@@ -222,10 +216,16 @@ public class CommonConfig {
             return;
         }
         
-        // Verificar si realmente hay cambios
-        if (!this.allowedFluids.equals(allowedFluids)) {
-            this.allowedFluids = new HashSet<>(allowedFluids);
-            this.dirty = true;
+        // Crear una nueva instancia para evitar compartir referencias
+        this.allowedFluids = new HashSet<>(allowedFluids);
+        
+        // Marcar como modificado
+        this.dirty = true;
+        
+        // Asegurar que agua siempre está incluida
+        ResourceLocation waterFluidId = BuiltInRegistries.FLUID.getKey(Fluids.WATER);
+        if (!this.allowedFluids.contains(waterFluidId)) {
+            this.allowedFluids.add(waterFluidId);
         }
     }
     
@@ -241,5 +241,12 @@ public class CommonConfig {
      */
     public void markClean() {
         this.dirty = false;
+    }
+
+    /**
+     * Marca la configuración como modificada explícitamente
+     */
+    public void markDirty() {
+        this.dirty = true;
     }
 }

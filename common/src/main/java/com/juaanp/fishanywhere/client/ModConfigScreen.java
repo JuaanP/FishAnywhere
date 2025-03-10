@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.HashSet;
 
 public class ModConfigScreen extends Screen {
     // Componentes de texto
@@ -146,17 +147,34 @@ public class ModConfigScreen extends Screen {
         // Verificar si alguna configuración no es la predeterminada
         boolean openWaterChanged = getforceOpenWater() != CommonConfig.getDefaultForceOpenWater();
 
-        // Consideramos que por defecto deben estar todos los fluidos habilitados
-        boolean fluidsChanged = false;
+        // Obtener los conjuntos de fluidos
         Set<ResourceLocation> allowedFluids = CommonConfig.getInstance().getAllowedFluids();
         Set<ResourceLocation> allValidFluidIds = FluidRegistryHelper.getAllFluidIds();
-
-        // Si no todos los fluidos válidos están permitidos, o si hay fluidos permitidos
-        // que no están en la lista de válidos, entonces consideramos que ha cambiado
-        if (allowedFluids.size() != allValidFluidIds.size() || !allowedFluids.containsAll(allValidFluidIds)) {
-            fluidsChanged = true;
+        
+        // Para detectar cambios de manera más fiable:
+        // 1. Las cantidades deben ser iguales
+        boolean sizesDiffer = allowedFluids.size() != allValidFluidIds.size();
+        
+        // 2. Todos los fluidos válidos deben estar en la lista de permitidos
+        boolean missingFluids = false;
+        for (ResourceLocation fluidId : allValidFluidIds) {
+            if (!allowedFluids.contains(fluidId)) {
+                missingFluids = true;
+                break;
+            }
         }
-
+        
+        // 3. No debe haber fluidos permitidos que no estén en la lista de válidos
+        boolean extraFluids = false;
+        for (ResourceLocation fluidId : allowedFluids) {
+            if (!allValidFluidIds.contains(fluidId)) {
+                extraFluids = true;
+                break;
+            }
+        }
+        
+        boolean fluidsChanged = sizesDiffer || missingFluids || extraFluids;
+        
         return openWaterChanged || fluidsChanged;
     }
 
@@ -166,14 +184,10 @@ public class ModConfigScreen extends Screen {
         setforceOpenWater(defaultValue);
         this.forceOpenWaterButton.setValue(defaultValue);
 
-        // Restablecer fluidos permitidos a todos los disponibles
-        // en lugar de hacerlo manualmente, usamos el método del CommonConfig
+        // Simplemente llamar al método de reseteo en CommonConfig
         CommonConfig.getInstance().resetToDefaults();
-
-        // Asegurarnos de forzar la carga de todos los fluidos
-        FluidRegistryHelper.forceInitialize();
-        CommonConfig.getInstance().forceLoadAllFluids();
-
+        
+        // Guardar la configuración
         saveConfig();
 
         // Recargar la pantalla para mostrar valores actualizados
