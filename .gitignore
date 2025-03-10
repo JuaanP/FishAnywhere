@@ -15,11 +15,52 @@ out
 !.idea/scopes
 
 # gradle
-build
 .gradle
 
 # other
 eclipse
 run
-runs
 local.properties
+/fabric/build/classes/
+/fabric/build/devlibs/
+/fabric/build/loom-cache/
+/fabric/build/generated/
+/fabric/build/processIncludeJars/
+/fabric/build/tmp/
+/fabric/build/resources/
+/forge/build/createMcpToSrg/
+/forge/build/downloadMCMeta/
+/forge/build/downloadMcpConfig/
+/forge/build/extractSrg/
+/forge/build/generated/
+/forge/build/jarjar/
+/forge/build/reobfJar/
+/forge/build/sourcesSets/
+/forge/build/tmp/
+/common/build/
+/forge/runs/client/config/
+/forge/runs/client/defaultconfigs/
+/forge/runs/client/downloads/
+/forge/runs/client/logs/
+/forge/runs/client/resourcepacks/
+/forge/runs/client/saves/
+/forge/runs/client/options.txt
+/forge/runs/client/usercache.json
+/forge/runs/client/usernamecache.json
+/fabric/runs/client/.fabric/
+/fabric/runs/client/config/
+/fabric/runs/client/crash-reports/
+/fabric/runs/client/data/
+/fabric/runs/client/defaultconfigs/
+/fabric/runs/client/downloads/
+/fabric/runs/client/logs/
+/fabric/runs/client/resourcepacks/
+/fabric/runs/client/resources/
+/fabric/runs/client/saves/
+/fabric/runs/client/schematics/
+/fabric/runs/client/options.txt
+/fabric/runs/client/usercache.json
+/fabric/runs/client/usernamecache.json
+/fabric/runs/server/
+/buildSrc/build/
+/.idea/
