@@ -1,20 +1,10 @@
 {
-  "fishanywhere.config.section.no.villager.trading.common.toml.title": "Configuration de FishAnywhere",
   "fishanywhere.config.title": "Configuration de FishAnywhere",
-
-  "fishanywhere.config.category.bottles": "Paramètres des Fioles d'Enchantement",
-  "fishanywhere.config.category.orbs": "Paramètres des Orbes d'Expérience",
-
-  "fishanywhere.config.requireCtrl": "S'accroupir nécessaire",
-  "fishanywhere.config.xpMultiplier": "Multiplicateur d'XP",
-  "fishanywhere.config.orbAttractRange": "Portée d'Attraction",
-  "fishanywhere.config.orbPickupRange": "Portée de Ramassage",
+  "fishanywhere.config.fluidsTitle": "Fluides Autorisés",
+  "fishanywhere.config.forceOpenWater": "Forcer l'Eau Ouverte",
+  "fishanywhere.config.forceOpenWater.tooltip": "Lorsque cette option est activée, vous obtiendrez toujours du butin comme si vous pêchiez en eau libre",
 
   "fishanywhere.config.enable": "Activer",
   "fishanywhere.config.reset": "Réinitialiser",
-  "fishanywhere.config.default": "Par défaut",
-
-  "fishanywhere.config.levelsPerBottle": "Niveaux par fiole",
-  "fishanywhere.config.auto": "Auto",
-  "fishanywhere.config.max": "Max"
+  "fishanywhere.config.default": "Par défaut"
 }

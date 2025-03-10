@@ -1,0 +1,10 @@
+{
+  "fishanywhere.config.title": "Konfiguracja FishAnywhere",
+  "fishanywhere.config.fluidsTitle": "Dozwolone Płyny",
+  "fishanywhere.config.forceOpenWater": "Wymuś Otwartą Wodę",
+  "fishanywhere.config.forceOpenWater.tooltip": "Gdy włączone, zawsze będziesz otrzymywać łupy, jak podczas łowienia w otwartej wodzie",
+
+  "fishanywhere.config.enable": "Włącz",
+  "fishanywhere.config.reset": "Reset",
+  "fishanywhere.config.default": "Domyślne"
+} 

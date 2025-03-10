@@ -1,0 +1,10 @@
+{
+  "fishanywhere.config.title": "FishAnywhere 설정",
+  "fishanywhere.config.fluidsTitle": "허용된 유체",
+  "fishanywhere.config.forceOpenWater": "열린 물 강제 적용",
+  "fishanywhere.config.forceOpenWater.tooltip": "활성화하면 열린 물에서 낚시한 것처럼 항상 전리품을 얻습니다",
+
+  "fishanywhere.config.enable": "활성화",
+  "fishanywhere.config.reset": "재설정",
+  "fishanywhere.config.default": "기본값"
+} 
