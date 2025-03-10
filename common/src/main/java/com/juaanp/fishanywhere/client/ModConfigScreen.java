@@ -144,9 +144,14 @@
             // Verificar si alguna configuración no es la predeterminada
             boolean openWaterChanged = getforceOpenWater() != CommonConfig.getDefaultForceOpenWater();
 
+            // Consideramos que por defecto deben estar todos los fluidos habilitados
             boolean fluidsChanged = false;
             Set<ResourceLocation> allowedFluids = CommonConfig.getInstance().getAllowedFluids();
-            if (allowedFluids.size() != 1 || !allowedFluids.contains(Registry.FLUID.getKey(Fluids.WATER))) {
+            Set<ResourceLocation> allValidFluidIds = FluidRegistryHelper.getAllFluidIds();
+            
+            // Si no todos los fluidos válidos están permitidos, o si hay fluidos permitidos
+            // que no están en la lista de válidos, entonces consideramos que ha cambiado
+            if (allowedFluids.size() != allValidFluidIds.size() || !allowedFluids.containsAll(allValidFluidIds)) {
                 fluidsChanged = true;
             }
 
@@ -159,9 +164,13 @@
             setforceOpenWater(defaultValue);
             this.forceOpenWaterButton.setValue(defaultValue);
 
-            // Restablecer fluidos permitidos (solo agua)
-            Set<ResourceLocation> defaultFluids = Set.of(Registry.FLUID.getKey(Fluids.WATER));
-            CommonConfig.getInstance().setAllowedFluids(defaultFluids);
+            // Restablecer fluidos permitidos a todos los disponibles
+            // en lugar de hacerlo manualmente, usamos el método del CommonConfig
+            CommonConfig.getInstance().resetToDefaults();
+            
+            // Asegurarnos de forzar la carga de todos los fluidos
+            FluidRegistryHelper.forceInitialize();
+            CommonConfig.getInstance().forceLoadAllFluids();
 
             saveConfig();
 
