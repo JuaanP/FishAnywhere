@@ -1,8 +1,6 @@
 package com.juaanp.fishanywhere;
 
-import com.juaanp.fishanywhere.config.CommonConfig;
 import com.juaanp.fishanywhere.config.ConfigHelper;
-import com.juaanp.fishanywhere.platform.Services;
 import com.juaanp.fishanywhere.util.FluidRegistryHelper;
 
 public class CommonClass {

@@ -137,3 +137,28 @@ tasks.register('cleanBuilds', Delete) {
     group 'build'
     delete "${rootDir}/builds"
 }
+
+/*
+configurations.all {
+    resolutionStrategy {
+        force 'org.ow2.asm:asm-tree:9.7'
+        force 'org.ow2.asm:asm:9.7'
+        force 'org.ow2.asm:asm-commons:9.7'
+        force 'org.ow2.asm:asm-analysis:9.7'
+        force 'org.ow2.asm:asm-util:9.7'
+    }
+}
+
+dependencies {
+    // Ejemplo - ajusta según tus dependencias específicas
+    neoforge {
+        exclude group: 'org.ow2.asm', module: 'asm-tree'
+        exclude group: 'org.ow2.asm', module: 'asm'
+    }
+    
+    // Declara explícitamente la versión que quieres usar
+    implementation 'org.ow2.asm:asm-tree:9.7'
+    implementation 'org.ow2.asm:asm:9.7'
+}
+
+ */

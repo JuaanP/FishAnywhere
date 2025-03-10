@@ -13,8 +13,8 @@ minecraft {
 
 dependencies {
     compileOnly group:'org.spongepowered', name:'mixin', version:'0.8.5'
-    compileOnly 'org.ow2.asm:asm-tree:9.3'
-    compileOnly 'org.ow2.asm:asm:9.3'
+    //compileOnly 'org.ow2.asm:asm-tree:9.3'
+    //compileOnly 'org.ow2.asm:asm:9.3'
 }
 
 configurations {
