@@ -5,10 +5,6 @@ import com.juaanp.fishanywhere.config.CommonConfig;
 import com.juaanp.fishanywhere.config.ConfigHelper;
 import com.juaanp.fishanywhere.util.FluidRegistryHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -527,18 +523,21 @@ public class ModConfigScreen extends Screen {
                     // Asegurarnos de que la textura está establecida
                     RenderSystem.setShaderTexture(0, BLOCK_ATLAS);
                     
-                    // Color normal para todos los fluidos
-                    RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-                    
                     RenderSystem.enableBlend();
                     
-                    // Usar el método blitSprite para renderizar
+                    // Usamos un enfoque diferente: primero renderizamos sin color
                     guiGraphics.blitSprite(
                         RenderType::guiTextured,
                         fluidSprite,
                         x, y,
                         iconSize, iconSize
                     );
+                    
+                    // Si es agua, aplicamos un tinte azul semitransparente encima
+                    if (fluid == Fluids.WATER) {
+                        // Superponemos un rectángulo azul semitransparente solo sobre la textura
+                        guiGraphics.fill(x, y, x + iconSize, y + iconSize, 0x803070FF);
+                    }
                     
                     RenderSystem.disableBlend();
                 }
