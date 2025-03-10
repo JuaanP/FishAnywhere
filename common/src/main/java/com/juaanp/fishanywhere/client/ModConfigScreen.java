@@ -5,10 +5,13 @@ import com.juaanp.fishanywhere.config.CommonConfig;
 import com.juaanp.fishanywhere.config.ConfigHelper;
 import com.juaanp.fishanywhere.util.FluidRegistryHelper;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.BufferBuilder;
+import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractSelectionList;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.client.gui.components.ObjectSelectionList;
@@ -20,19 +23,18 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.Util;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.client.renderer.RenderType;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.HashSet;
 
 public class ModConfigScreen extends Screen {
     // Componentes de texto
@@ -266,11 +268,6 @@ public class ModConfigScreen extends Screen {
         @Override
         public int getRowWidth() {
             return width - 40; // Margen de 20px a cada lado
-        }
-
-        @Override
-        protected int getScrollbarPosition() {
-            return width - 10; // Posición de la barra de desplazamiento
         }
 
         @Override
@@ -523,29 +520,27 @@ public class ModConfigScreen extends Screen {
 
                 // Renderizar el icono del fluido
                 if (fluidSprite != null) {
+                    // Calcular posición
+                    int x = left + 5;
+                    int y = top + (height - iconSize) / 2;
+                    
+                    // Asegurarnos de que la textura está establecida
                     RenderSystem.setShaderTexture(0, BLOCK_ATLAS);
-
-                    // Aplicar color solo para fluidos específicos que lo necesitan
-                    if (fluid == Fluids.WATER) {
-                        // Color azul reconocible para el agua
-                        RenderSystem.setShaderColor(0.25F, 0.47F, 0.9F, 1.0F);
-                    }
-                    else {
-                        // Para otros fluidos, no aplicar tinte
-                        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-                    }
-
-                    // Dibujar el sprite
-                    guiGraphics.blit(
-                         left + 5,                       // x
-                         top + (height - iconSize) / 2,  // y
-                         0,                              // blitOffset
-                         iconSize,                       // width
-                         iconSize,                       // height
-                         this.fluidSprite);
-
-                    // Restaurar color por defecto después de dibujar
+                    
+                    // Color normal para todos los fluidos
                     RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+                    
+                    RenderSystem.enableBlend();
+                    
+                    // Usar el método blitSprite para renderizar
+                    guiGraphics.blitSprite(
+                        RenderType::guiTextured,
+                        fluidSprite,
+                        x, y,
+                        iconSize, iconSize
+                    );
+                    
+                    RenderSystem.disableBlend();
                 }
 
                 // Renderizar el nombre del fluido a la derecha del icono
@@ -607,7 +602,7 @@ public class ModConfigScreen extends Screen {
             this.renderPanorama(guiGraphics, partialTick);
         }
         
-        this.renderBlurredBackground(partialTick);
+        this.renderBlurredBackground();
         this.renderMenuBackground(guiGraphics);
     }
 }
