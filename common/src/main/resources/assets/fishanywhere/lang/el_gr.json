@@ -1,0 +1,10 @@
+{
+  "fishanywhere.config.title": "Ρυθμίσεις FishAnywhere",
+  "fishanywhere.config.fluidsTitle": "Επιτρεπόμενα Υγρά",
+  "fishanywhere.config.forceOpenWater": "Εξαναγκασμός Ανοιχτών Υδάτων",
+  "fishanywhere.config.forceOpenWater.tooltip": "Όταν είναι ενεργοποιημένο, θα λαμβάνετε πάντα λάφυρα σαν να ψαρεύετε σε ανοιχτά νερά",
+
+  "fishanywhere.config.enable": "Ενεργοποίηση",
+  "fishanywhere.config.reset": "Επαναφορά",
+  "fishanywhere.config.default": "Προεπιλογή"
+} 

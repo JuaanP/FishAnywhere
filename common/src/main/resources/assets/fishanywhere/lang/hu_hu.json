@@ -1,0 +1,10 @@
+{
+  "fishanywhere.config.title": "FishAnywhere Beállítások",
+  "fishanywhere.config.fluidsTitle": "Engedélyezett Folyadékok",
+  "fishanywhere.config.forceOpenWater": "Nyílt Víz Kényszerítése",
+  "fishanywhere.config.forceOpenWater.tooltip": "Ha engedélyezve van, mindig úgy kapsz zsákmányt, mintha nyílt vízen horgásznál",
+
+  "fishanywhere.config.enable": "Engedélyezés",
+  "fishanywhere.config.reset": "Visszaállítás",
+  "fishanywhere.config.default": "Alapértelmezett"
+} 
