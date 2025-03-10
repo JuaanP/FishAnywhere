@@ -1,0 +1,10 @@
+{
+  "fishanywhere.config.title": "FishAnywhere Configuration",
+  "fishanywhere.config.fluidsTitle": "Allowed Fluids",
+  "fishanywhere.config.forceOpenWater": "Force Open Water",
+  "fishanywhere.config.forceOpenWater.tooltip": "When enabled, you will always get loot as if fishing in open water",
+
+  "fishanywhere.config.enable": "Enable",
+  "fishanywhere.config.reset": "Reset",
+  "fishanywhere.config.default": "Default"
+}

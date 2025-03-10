@@ -1,0 +1,10 @@
+{
+  "fishanywhere.config.title": "Configuration de FishAnywhere",
+  "fishanywhere.config.fluidsTitle": "Fluides Autorisés",
+  "fishanywhere.config.forceOpenWater": "Forcer l'Eau Ouverte",
+  "fishanywhere.config.forceOpenWater.tooltip": "Lorsque cette option est activée, vous obtiendrez toujours du butin comme si vous pêchiez en eau libre",
+
+  "fishanywhere.config.enable": "Activer",
+  "fishanywhere.config.reset": "Réinitialiser",
+  "fishanywhere.config.default": "Par défaut"
+}

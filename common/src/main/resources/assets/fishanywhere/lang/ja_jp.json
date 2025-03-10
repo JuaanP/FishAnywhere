@@ -1,0 +1,10 @@
+{
+  "fishanywhere.config.title": "FishAnywhere設定",
+  "fishanywhere.config.fluidsTitle": "許可された液体",
+  "fishanywhere.config.forceOpenWater": "オープンウォーターを強制",
+  "fishanywhere.config.forceOpenWater.tooltip": "有効にすると、オープンウォーターで釣りをしているかのように常に戦利品を獲得できます",
+
+  "fishanywhere.config.enable": "有効",
+  "fishanywhere.config.reset": "リセット",
+  "fishanywhere.config.default": "デフォルト"
+} 

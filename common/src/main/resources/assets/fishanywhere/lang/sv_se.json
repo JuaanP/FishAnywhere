@@ -1,0 +1,10 @@
+{
+  "fishanywhere.config.title": "FishAnywhere Konfiguration",
+  "fishanywhere.config.fluidsTitle": "Tillåtna Vätskor",
+  "fishanywhere.config.forceOpenWater": "Tvinga Öppet Vatten",
+  "fishanywhere.config.forceOpenWater.tooltip": "När aktiverad får du alltid byten som om du fiskade i öppet vatten",
+
+  "fishanywhere.config.enable": "Aktivera",
+  "fishanywhere.config.reset": "Återställ",
+  "fishanywhere.config.default": "Standard"
+} 

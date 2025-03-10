@@ -1,0 +1,11 @@
+{
+  "fishanywhere.config.title": "Configuração do FishAnywhere",
+  "fishanywhere.config.fluidsTitle": "Fluidos Permitidos",
+  "fishanywhere.config.forceOpenWater": "Forçar Água Aberta",
+
+  "fishanywhere.config.enable": "Habilitar",
+  "fishanywhere.config.reset": "Redefinir",
+  "fishanywhere.config.default": "Padrão",
+
+  "fishanywhere.config.forceOpenWater.tooltip": "Quando ativado, você sempre receberá espólios como se estivesse pescando em águas abertas"
+}

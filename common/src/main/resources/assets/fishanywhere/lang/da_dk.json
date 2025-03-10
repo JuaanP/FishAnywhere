@@ -1,0 +1,10 @@
+{
+  "fishanywhere.config.title": "FishAnywhere Konfiguration",
+  "fishanywhere.config.fluidsTitle": "Tilladte Væsker",
+  "fishanywhere.config.forceOpenWater": "Tving Åbent Vand",
+  "fishanywhere.config.forceOpenWater.tooltip": "Når aktiveret vil du altid få bytte som om du fiskede i åbent vand",
+
+  "fishanywhere.config.enable": "Aktivér",
+  "fishanywhere.config.reset": "Nulstil",
+  "fishanywhere.config.default": "Standard"
+} 

@@ -1,0 +1,10 @@
+{
+  "fishanywhere.config.title": "Konfigurace FishAnywhere",
+  "fishanywhere.config.fluidsTitle": "Povolené Kapaliny",
+  "fishanywhere.config.forceOpenWater": "Vynutit Otevřenou Vodu",
+  "fishanywhere.config.forceOpenWater.tooltip": "Pokud je povoleno, vždy získáte kořist, jako byste rybařili v otevřené vodě",
+
+  "fishanywhere.config.enable": "Povolit",
+  "fishanywhere.config.reset": "Resetovat",
+  "fishanywhere.config.default": "Výchozí"
+} 

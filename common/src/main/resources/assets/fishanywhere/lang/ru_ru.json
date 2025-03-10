@@ -1,0 +1,11 @@
+{
+  "fishanywhere.config.title": "Настройки FishAnywhere",
+  "fishanywhere.config.fluidsTitle": "Разрешенные жидкости",
+  "fishanywhere.config.forceOpenWater": "Принудительно открытая вода",
+
+  "fishanywhere.config.enable": "Включить",
+  "fishanywhere.config.reset": "Сбросить",
+  "fishanywhere.config.default": "По умолчанию",
+
+  "fishanywhere.config.forceOpenWater.tooltip": "Когда включено, вы всегда будете получать добычу, как если бы вы рыбачили в открытой воде"
+}

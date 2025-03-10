@@ -1,0 +1,10 @@
+{
+  "fishanywhere.config.title": "FishAnywhere Asetukset",
+  "fishanywhere.config.fluidsTitle": "Sallitut Nesteet",
+  "fishanywhere.config.forceOpenWater": "Pakota Avovesi",
+  "fishanywhere.config.forceOpenWater.tooltip": "Kun käytössä, saat aina saalista kuin kalastaisit avovedessä",
+
+  "fishanywhere.config.enable": "Käytä",
+  "fishanywhere.config.reset": "Nollaa",
+  "fishanywhere.config.default": "Oletus"
+} 
