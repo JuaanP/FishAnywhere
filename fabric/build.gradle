@@ -60,3 +60,10 @@ tasks.remapJar {
 
 // Asegurar que el JAR principal sea el remapJar
 tasks.build.dependsOn tasks.remapJar
+
+// Solo quitar el sufijo -dev para versiones de lanzamiento
+tasks.named("remapJar") {
+    if (project.hasProperty('releaseType') && project.releaseType == 'release') {
+        archiveClassifier = null
+    }
+}
