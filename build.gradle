@@ -27,6 +27,11 @@ subprojects {
             if (name.contains('sources') || name.contains('javadoc')) {
                 enabled = false
             }
+            
+            // Para archivos jar principales, asegurarse de que no tengan el sufijo -dev
+            if (name == 'jar') {
+                archiveClassifier = ''
+            }
         }
         
         // Añadir plugins de publicación para los loaders soportados
@@ -54,6 +59,26 @@ subprojects {
                     loaders.add("forge")
                 } else if (project.name == 'neoforge') {
                     loaders.add("neoforge")
+                }
+            }
+            
+            // Para proyectos Fabric específicamente, configurar loom para producción
+            if (project.name == 'fabric') {
+                loom {
+                    runs {
+                        // Marcar como build de producción
+                        client {
+                            runDir = "build/runClient"
+                            ideConfigGenerated = true
+                            // NO es una build de desarrollo
+                            property("fabric.development", "false")
+                        }
+                        server {
+                            runDir = "build/runServer"
+                            // NO es una build de desarrollo
+                            property("fabric.development", "false")
+                        }
+                    }
                 }
             }
             
@@ -86,7 +111,7 @@ subprojects {
                     
                     // Archivos a subir
                     mainArtifact(tasks.jar) {
-                        displayName = "${project.version} (${project.name.capitalize()}) for MC ${minecraft_version}"
+                        // displayName = "${project.version} (${project.name.capitalize()}) for MC ${minecraft_version}"
                     }
                     
                     // Versiones de Minecraft compatibles
@@ -137,28 +162,3 @@ tasks.register('cleanBuilds', Delete) {
     group 'build'
     delete "${rootDir}/builds"
 }
-
-/*
-configurations.all {
-    resolutionStrategy {
-        force 'org.ow2.asm:asm-tree:9.7'
-        force 'org.ow2.asm:asm:9.7'
-        force 'org.ow2.asm:asm-commons:9.7'
-        force 'org.ow2.asm:asm-analysis:9.7'
-        force 'org.ow2.asm:asm-util:9.7'
-    }
-}
-
-dependencies {
-    // Ejemplo - ajusta según tus dependencias específicas
-    neoforge {
-        exclude group: 'org.ow2.asm', module: 'asm-tree'
-        exclude group: 'org.ow2.asm', module: 'asm'
-    }
-    
-    // Declara explícitamente la versión que quieres usar
-    implementation 'org.ow2.asm:asm-tree:9.7'
-    implementation 'org.ow2.asm:asm:9.7'
-}
-
- */
