@@ -4,7 +4,7 @@ plugins {
 }
 
 base {
-    archivesName = "${mod_name}-neoforge-${minecraft_version}-v"
+    archivesName = "${mod_name}-neoforge-${minecraft_version}"
 }
 
 // Automatically enable neoforge AccessTransformers if the file exists
