@@ -22,9 +22,9 @@ dependencies {
 
 // Deshabilitar explícitamente las tareas relacionadas con sources y javadoc
 tasks.configureEach { task ->
-    if (task.name.contains('sourcesJar') || 
-        task.name.contains('remapSourcesJar') || 
-        task.name.contains('javadoc')) {
+    if (task.name.contains('sourcesJar') ||
+            task.name.contains('remapSourcesJar') ||
+            task.name.contains('javadoc')) {
         task.enabled = false
     }
 }

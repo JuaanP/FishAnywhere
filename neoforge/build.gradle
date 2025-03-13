@@ -4,7 +4,7 @@ plugins {
 }
 
 base {
-    archivesName = "${mod_name}-neoforge-${minecraft_version}"
+    archivesName = "${mod_id}-neoforge-${minecraft_version}"
 }
 
 // Automatically enable neoforge AccessTransformers if the file exists
@@ -32,11 +32,6 @@ runs {
 
     clientData {
         programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
-    }
-
-    serverData {
-        programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
-        programArgument '--nogui'
     }
 }
 
