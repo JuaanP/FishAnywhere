@@ -34,6 +34,53 @@ subprojects {
             }
         }
         
+        // Configuración específica de Mixin para proyectos Forge/NeoForge
+        if (project.name in ['forge', 'neoforge']) {
+            if (project.plugins.hasPlugin('org.spongepowered.mixin')) {
+                mixin {
+                    // Asegurarse de que los refmaps se generen correctamente
+                    add sourceSets.main, "fishanywhere.refmap.json"
+                    
+                    // Configurar correctamente el mixin config
+                    config "fishanywhere.forge.mixins.json"
+                    
+                    // Importante: incluir debug info para detectar problemas
+                    debug.export = true
+                }
+                
+                // Asegurarse de que el archivo refmap se incluya en el JAR final
+                jar {
+                    manifest {
+                        attributes([
+                            'MixinConfigs': 'fishanywhere.forge.mixins.json',
+                            'FMLCorePluginContainsFMLMod': 'true'
+                        ])
+                    }
+                    
+                    // Incluir el archivo refmap en el JAR final
+                    from "${project.buildDir}/tmp/mixin/fishanywhere.refmap.json"
+                }
+            }
+        }
+        
+        // Configuración específica de Mixin para proyectos Fabric
+        if (project.name == 'fabric') {
+            if (project.plugins.hasPlugin('org.spongepowered.mixin')) {
+                mixin {
+                    // Usar un refmap separado para Fabric para evitar conflictos
+                    add sourceSets.main, "fishanywhere.fabric.refmap.json"
+                    
+                    // Importante: incluir debug info para detectar problemas
+                    debug.export = true
+                }
+                
+                // Para Fabric, asegurarnos de que el archivo refmap se incluya en el JAR
+                jar {
+                    from "${project.buildDir}/tmp/mixin/fishanywhere.fabric.refmap.json"
+                }
+            }
+        }
+        
         // Añadir plugins de publicación para los loaders soportados
         if (project.name in ['fabric', 'forge', 'neoforge']) {
             plugins.apply('com.modrinth.minotaur')

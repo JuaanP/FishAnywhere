@@ -4,9 +4,7 @@
   "package": "com.juaanp.fishanywhere.mixin",
   "compatibilityLevel": "JAVA_17",
   "refmap": "fishanywhere.refmap.json",
-  "mixins": [
-    "FishingHookMixin"
-  ],
+  "mixins": [],
   "client": [],
   "injectors": {
     "defaultRequire": 1
